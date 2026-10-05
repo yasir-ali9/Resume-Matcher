@@ -42,6 +42,10 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({ value, onCha
       name: t('builder.formatting.templates.clean.name'),
       description: t('builder.formatting.templates.clean.description'),
     },
+    'software-engineer': {
+      name: t('builder.formatting.templates.softwareEngineer.name'),
+      description: t('builder.formatting.templates.softwareEngineer.description'),
+    },
     vivid: {
       name: t('builder.formatting.templates.vivid.name'),
       description: t('builder.formatting.templates.vivid.description'),
@@ -139,7 +143,7 @@ export const TemplateThumbnail: React.FC<TemplateThumbnailProps> = ({ type, isAc
     );
   }
 
-  if (type === 'clean') {
+  if (type === 'clean' || type === 'software-engineer') {
     // Clean thumbnail - centered light name + large understated gray uppercase headers
     return (
       <div className={`w-14 h-18 border ${borderColor} bg-white p-1.5 flex flex-col gap-1`}>

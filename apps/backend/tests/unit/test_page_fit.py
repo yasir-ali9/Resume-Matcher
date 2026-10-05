@@ -32,6 +32,7 @@ def test_page_fit_settings_query_matches_pdf_endpoint_params() -> None:
     assert q["marginTop"] == "10" and q["lang"] == "en"
     assert q["linkFont"] == "serif"
     assert PageFitSettings().to_query()["linkFont"] == "mono"
+    assert PageFitSettings(template="software-engineer").to_query()["template"] == "software-engineer"
     assert "lang" not in PageFitSettings().to_query()
 
 

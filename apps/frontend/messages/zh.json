@@ -423,6 +423,10 @@
           "name": "简洁",
           "description": "极简无衬线版式，栏目标题大而低调"
         },
+        "softwareEngineer": {
+          "name": "软件工程师",
+          "description": "适用于软件工程师的简洁单栏布局"
+        },
         "vivid": {
           "name": "鲜明",
           "description": "彩色双栏布局，强调色标题与箭头项目符号"

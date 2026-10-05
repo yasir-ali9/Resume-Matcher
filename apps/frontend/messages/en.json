@@ -423,6 +423,10 @@
           "name": "Clean",
           "description": "Minimal sans layout with large understated section headers"
         },
+        "softwareEngineer": {
+          "name": "Software Engineer",
+          "description": "Clean single-column layout for software engineers"
+        },
         "vivid": {
           "name": "Vivid",
           "description": "Colorful two-column layout with accent headers and arrow bullets"

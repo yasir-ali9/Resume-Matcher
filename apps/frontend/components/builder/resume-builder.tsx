@@ -1777,7 +1777,8 @@ const ResumeBuilderContent = () => {
                 {templateSettings.template === 'swiss-single' ||
                 templateSettings.template === 'modern' ||
                 templateSettings.template === 'latex' ||
-                templateSettings.template === 'clean'
+                templateSettings.template === 'clean' ||
+                templateSettings.template === 'software-engineer'
                   ? t('builder.footer.singleColumn')
                   : t('builder.footer.twoColumn')}
               </span>

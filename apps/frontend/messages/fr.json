@@ -423,6 +423,10 @@
           "name": "Épuré",
           "description": "Mise en page minimaliste sans-serif avec grands en-têtes de section discrets"
         },
+        "softwareEngineer": {
+          "name": "Ingénieur logiciel",
+          "description": "Mise en page épurée à une colonne pour les ingénieurs logiciels"
+        },
         "vivid": {
           "name": "Vif",
           "description": "Mise en page deux colonnes colorée avec en-têtes accentués et puces fléchées"

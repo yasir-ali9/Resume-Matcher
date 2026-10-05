@@ -262,6 +262,7 @@
   font-family: var(--link-font);
   color: inherit;
   text-decoration: underline;
+  text-underline-offset: calc(0.18em + 1px);
 }
 
 .resume-body :global(a:hover) {

@@ -12,6 +12,7 @@ export type TemplateType =
   | 'modern-two-column'
   | 'latex'
   | 'clean'
+  | 'software-engineer'
   | 'vivid';
 
 export type PageSize = 'A4' | 'LETTER';
@@ -283,6 +284,11 @@ export const TEMPLATE_OPTIONS: TemplateInfo[] = [
     description: 'Minimal sans layout with large understated section headers',
   },
   {
+    id: 'software-engineer',
+    name: 'Software Engineer',
+    description: 'Clean single-column layout for software engineers',
+  },
+  {
     id: 'vivid',
     name: 'Vivid',
     description: 'Colorful two-column layout with accent headers and arrow bullets',
@@ -302,6 +308,7 @@ export const TEMPLATE_FONT_PRESETS: Partial<
 > = {
   latex: { headerFont: 'serif', bodyFont: 'serif' },
   clean: { headerFont: 'sans-serif', bodyFont: 'sans-serif' },
+  'software-engineer': { headerFont: 'sans-serif', bodyFont: 'sans-serif' },
 };
 
 /**

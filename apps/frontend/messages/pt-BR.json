@@ -421,6 +421,10 @@
           "name": "Limpo",
           "description": "Layout minimalista sem serifa com cabeçalhos grandes e discretos"
         },
+        "softwareEngineer": {
+          "name": "Engenheiro de Software",
+          "description": "Layout limpo de uma coluna para engenheiros de software"
+        },
         "vivid": {
           "name": "Vívido",
           "description": "Layout de duas colunas colorido com cabeçalhos de destaque e marcadores em seta"

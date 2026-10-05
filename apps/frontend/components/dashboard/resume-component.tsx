@@ -6,6 +6,7 @@ import {
   ResumeModernTwoColumn,
   ResumeLatex,
   ResumeClean,
+  ResumeSoftwareEngineer,
   ResumeVivid,
 } from '@/components/resume';
 import {
@@ -226,6 +227,13 @@ const Resume: React.FC<ResumeProps> = ({
       )}
       {mergedSettings.template === 'clean' && (
         <ResumeClean
+          data={resumeData}
+          showContactIcons={mergedSettings.showContactIcons}
+          additionalSectionLabels={additionalSectionLabels}
+        />
+      )}
+      {mergedSettings.template === 'software-engineer' && (
+        <ResumeSoftwareEngineer
           data={resumeData}
           showContactIcons={mergedSettings.showContactIcons}
           additionalSectionLabels={additionalSectionLabels}

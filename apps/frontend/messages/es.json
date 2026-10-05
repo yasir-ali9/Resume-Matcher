@@ -423,6 +423,10 @@
           "name": "Limpio",
           "description": "Diseño minimalista sans con encabezados grandes y sobrios"
         },
+        "softwareEngineer": {
+          "name": "Ingeniero de software",
+          "description": "Diseño limpio de una columna para ingenieros de software"
+        },
         "vivid": {
           "name": "Vívido",
           "description": "Diseño de dos columnas colorido con encabezados de acento y viñetas de flecha"

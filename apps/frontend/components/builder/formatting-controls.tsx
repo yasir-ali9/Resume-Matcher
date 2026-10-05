@@ -154,6 +154,10 @@ export const FormattingControls: React.FC<FormattingControlsProps> = ({ settings
         name: t('builder.formatting.templates.clean.name'),
         description: t('builder.formatting.templates.clean.description'),
       },
+      'software-engineer': {
+        name: t('builder.formatting.templates.softwareEngineer.name'),
+        description: t('builder.formatting.templates.softwareEngineer.description'),
+      },
       vivid: {
         name: t('builder.formatting.templates.vivid.name'),
         description: t('builder.formatting.templates.vivid.description'),

@@ -401,6 +401,10 @@
           "name": "클린",
           "description": "큼직하고 절제된 섹션 제목의 미니멀한 산세리프 레이아웃"
         },
+        "softwareEngineer": {
+          "name": "소프트웨어 엔지니어",
+          "description": "소프트웨어 엔지니어를 위한 깔끔한 단일 열 레이아웃"
+        },
         "vivid": {
           "name": "비비드",
           "description": "강조 헤더와 화살표 불릿이 있는 화려한 2단 레이아웃"
