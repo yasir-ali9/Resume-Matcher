@@ -7,6 +7,8 @@ import type {
 } from '@/components/dashboard/resume-component';
 import { getSortedSections } from '@/lib/utils/section-helpers';
 import { formatDateRange } from '@/lib/utils';
+import { SkillRows } from './skill-rows';
+import { getTechnicalSkills } from '@/lib/utils/skill-rows';
 import { DescriptionList } from './description-list';
 import baseStyles from './styles/_base.module.css';
 import styles from './styles/latex.module.css';
@@ -47,8 +49,28 @@ export const ResumeLatex: React.FC<ResumeLatexProps> = ({
     GitHub: <Github size={12} />,
   };
 
-  const renderContactDetail = (label: string, value?: string, hrefPrefix: string = '') => {
+  const renderContactDetail = (
+    label: string,
+    value?: string,
+    hrefPrefix: string = ''
+  ): React.ReactNode => {
     if (!value) return null;
+
+    if (label === 'Email') {
+      const addresses = value.split(/[\s,]+/).filter(Boolean);
+      if (addresses.length > 1) {
+        return (
+          <span className="inline-flex items-center gap-2">
+            {addresses.map((address, index) => (
+              <React.Fragment key={`${address}-${index}`}>
+                {index > 0 && <span aria-hidden="true">|</span>}
+                {renderContactDetail('Email', address, hrefPrefix)}
+              </React.Fragment>
+            ))}
+          </span>
+        );
+      }
+    }
 
     let finalHrefPrefix = hrefPrefix;
     if (
@@ -83,7 +105,13 @@ export const ResumeLatex: React.FC<ResumeLatexProps> = ({
             {displayText}
           </a>
         ) : (
-          <span>{displayText}</span>
+          <span
+            className={
+              label === 'Location' ? 'underline underline-offset-[3px] decoration-1' : undefined
+            }
+          >
+            {displayText}
+          </span>
         )}
       </span>
     );
@@ -96,6 +124,7 @@ export const ResumeLatex: React.FC<ResumeLatexProps> = ({
     renderContactDetail('LinkedIn', personalInfo?.linkedin),
     renderContactDetail('GitHub', personalInfo?.github),
     renderContactDetail('Website', personalInfo?.website),
+    renderContactDetail('Location', personalInfo?.location),
   ].filter(Boolean);
 
   // Company-first entry header: bold company / bold dates, then italic role / italic location.
@@ -133,7 +162,7 @@ export const ResumeLatex: React.FC<ResumeLatexProps> = ({
         return (
           <div key={section.id} className={baseStyles['resume-section']}>
             <h3 className={styles.sectionTitle}>{section.displayName}</h3>
-            <p className={`text-justify ${baseStyles['resume-text']}`}>{summary}</p>
+            <p className={`text-left ${baseStyles['resume-text']}`}>{summary}</p>
           </div>
         );
 
@@ -165,7 +194,14 @@ export const ResumeLatex: React.FC<ResumeLatexProps> = ({
                     className={`flex justify-between items-baseline ${baseStyles['resume-row-tight']}`}
                   >
                     <div className="flex items-baseline gap-2">
-                      <span className={styles.entryPrimary}>{project.name}</span>
+                      <span className={styles.entryPrimary}>
+                        {project.name}
+                        {project.label && (
+                          <span className="ml-2 text-xs font-normal text-[var(--resume-text-tertiary)]">
+                            {project.label}
+                          </span>
+                        )}
+                      </span>
                       {(project.github || project.website) && (
                         <span className="flex gap-1.5">
                           {project.github && (
@@ -233,7 +269,7 @@ export const ResumeLatex: React.FC<ResumeLatexProps> = ({
             <div className={baseStyles['resume-items']}>
               {education.map((edu) => (
                 <div key={edu.id} className={baseStyles['resume-item']}>
-                  {renderEntryHeader(edu.institution, edu.years, edu.degree)}
+                  {renderEntryHeader(edu.institution, edu.years, edu.degree, edu.location)}
                   {edu.description && (
                     <p className={baseStyles['resume-text-sm']}>{edu.description}</p>
                   )}
@@ -316,7 +352,7 @@ const AdditionalSection: React.FC<{
   const clean = (items?: string[]) =>
     (items ?? []).filter((item): item is string => typeof item === 'string' && item.trim() !== '');
 
-  const technicalSkills = clean(additional.technicalSkills);
+  const technicalSkills = getTechnicalSkills(additional);
   const languages = clean(additional.languages);
   const certificationsTraining = clean(additional.certificationsTraining);
   const awards = clean(additional.awards);
@@ -347,7 +383,11 @@ const AdditionalSection: React.FC<{
     <div className={baseStyles['resume-section']}>
       <h3 className={styles.sectionTitle}>{displayName}</h3>
       <div className={`${baseStyles['resume-stack']} ${baseStyles['resume-text-sm']}`}>
-        {line(mergedLabels.technicalSkills, technicalSkills)}
+        {Array.isArray(additional.skillRows) ? (
+          <SkillRows rows={additional.skillRows} headingClassName={styles.skillLabel} />
+        ) : (
+          line(mergedLabels.technicalSkills, technicalSkills)
+        )}
         {line(mergedLabels.languages, languages)}
         {line(mergedLabels.certifications, certificationsTraining)}
         {line(mergedLabels.awards, awards)}

@@ -162,6 +162,18 @@
       "wordsChars": "{wordCount}語 / {charCount}文字"
     },
     "additionalForm": {
+      "otherInfoHeading": "その他のセクション見出し",
+      "otherInfoHeadingPlaceholder": "言語・資格・受賞歴",
+      "skillRowsHint": "グループごとに行を追加します。見出しを空にすると箇条書きになります。スキルはカンマで区切ってください。",
+      "skillRow": "行 {number}",
+      "moveRowUp": "行を上へ移動",
+      "moveRowDown": "行を下へ移動",
+      "removeRow": "行を削除",
+      "rowHeading": "見出し（任意）",
+      "rowHeadingPlaceholder": "言語、フレームワーク、クラウド…",
+      "rowSkills": "スキル",
+      "rowSkillsPlaceholder": "React.js, Next.js, TypeScript",
+      "addSkillRow": "スキル行を追加",
       "instructions": "各項目を改行で区切って入力してください（1行につき1項目）。",
       "placeholders": {
         "technicalSkills": "React\nTypeScript\nNode.js",
@@ -367,12 +379,14 @@
         "fields": {
           "institution": "学校/機関",
           "degree": "学位",
+          "location": "場所",
           "description": "説明",
           "descriptionOptional": "説明（任意）"
         },
         "placeholders": {
           "institution": "大学名",
           "degree": "学士（理学）",
+          "location": "都市、国",
           "years": "2016年8月 - 2020年5月",
           "description": "追加の詳細..."
         }
@@ -382,11 +396,13 @@
         "addFirstProject": "最初のプロジェクトを追加",
         "fields": {
           "projectName": "プロジェクト名",
+          "label": "ラベル",
           "role": "役割",
           "website": "Webサイト"
         },
         "placeholders": {
           "projectName": "Resume Matcher",
+          "label": "進行中、オープンソース、本番環境",
           "role": "作成者",
           "years": "2023年3月",
           "github": "github.com/username/project",
@@ -451,6 +467,27 @@
       "spacingSection": "セクション",
       "spacingItems": "項目",
       "spacingLines": "行間",
+      "loadLocalFonts": "ローカルフォントを読み込む",
+      "loadingLocalFonts": "読み込み中…",
+      "installedFonts": "インストール済みフォント",
+      "localFontsLoaded": "{count}件のフォントファミリーを読み込みました。",
+      "localFontsUnsupported": "HTTPSまたはlocalhost上のデスクトップ版ChromeかEdgeが必要です。",
+      "localFontsDenied": "アクセスが拒否されました。サイト設定でローカルフォントを許可して再試行してください。",
+      "localFontsFailed": "フォントを読み込めませんでした。再試行してください。",
+      "textColors": "文字色",
+      "resetColors": "色をリセット",
+      "colorLabels": {
+        "headings": "メイン見出し",
+        "subheadings": "小見出し",
+        "description": "説明文",
+        "secondary": "役職・日付・補足文",
+        "links": "リンク",
+        "underline": "リンクの下線",
+        "divider": "区切り線・区切り文字"
+      },
+      "typefaces": "フォント",
+      "defaultTypeface": "システムの既定",
+      "typefaceHint": "各分類のフォントを選び、見出し・本文・リンクに適用します。インストール済みフォントを使用し、PDFサーバーにない場合は代替フォントを使用します。",
       "fontSize": "フォントサイズ",
       "baseFontSize": "本文",
       "headerScale": "見出し",

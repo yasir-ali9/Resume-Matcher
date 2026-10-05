@@ -140,6 +140,18 @@
       "wordsChars": "{wordCount} 단어 / {charCount}자"
     },
     "additionalForm": {
+      "otherInfoHeading": "기타 섹션 제목",
+      "otherInfoHeadingPlaceholder": "언어, 자격증 및 수상",
+      "skillRowsHint": "그룹마다 행을 추가하세요. 제목을 비우면 글머리 기호로 표시됩니다. 기술은 쉼표로 구분하세요.",
+      "skillRow": "행 {number}",
+      "moveRowUp": "행 위로 이동",
+      "moveRowDown": "행 아래로 이동",
+      "removeRow": "행 삭제",
+      "rowHeading": "제목 (선택 사항)",
+      "rowHeadingPlaceholder": "언어, 프레임워크, 클라우드…",
+      "rowSkills": "기술",
+      "rowSkillsPlaceholder": "React.js, Next.js, TypeScript",
+      "addSkillRow": "기술 행 추가",
       "instructions": "항목을 줄바꿈으로 구분하여 입력하세요(각 항목마다 Enter를 누르세요).",
       "placeholders": {
         "technicalSkills": "React\nTypeScript\nNode.js",
@@ -345,12 +357,14 @@
         "fields": {
           "institution": "학교명",
           "degree": "학위",
+          "location": "위치",
           "description": "설명",
           "descriptionOptional": "설명 (선택 사항)"
         },
         "placeholders": {
           "institution": "학교 이름",
           "degree": "학사 학위",
+          "location": "도시, 국가",
           "years": "2016년 8월 - 2020년 5월",
           "description": "추가 세부 정보..."
         }
@@ -360,11 +374,13 @@
         "addFirstProject": "첫 프로젝트 추가",
         "fields": {
           "projectName": "프로젝트 이름",
+          "label": "라벨",
           "role": "역할",
           "website": "웹사이트"
         },
         "placeholders": {
           "projectName": "Resume Matcher",
+          "label": "진행 중, 오픈 소스, 프로덕션",
           "role": "제작자",
           "years": "2023년 3월",
           "github": "github.com/username/project",
@@ -429,6 +445,27 @@
       "spacingSection": "섹션",
       "spacingItems": "항목",
       "spacingLines": "줄",
+      "loadLocalFonts": "로컬 글꼴 불러오기",
+      "loadingLocalFonts": "불러오는 중…",
+      "installedFonts": "설치된 글꼴",
+      "localFontsLoaded": "로컬 글꼴 {count}개를 불러왔습니다.",
+      "localFontsUnsupported": "HTTPS 또는 localhost에서 데스크톱 Chrome이나 Edge가 필요합니다.",
+      "localFontsDenied": "접근이 거부되었습니다. 사이트 설정에서 로컬 글꼴을 허용한 후 다시 시도하세요.",
+      "localFontsFailed": "글꼴을 불러오지 못했습니다. 다시 시도하세요.",
+      "textColors": "텍스트 색상",
+      "resetColors": "색상 초기화",
+      "colorLabels": {
+        "headings": "주 제목",
+        "subheadings": "부제목",
+        "description": "설명",
+        "secondary": "역할, 날짜 및 보조 텍스트",
+        "links": "링크",
+        "underline": "링크 밑줄",
+        "divider": "구분선 / 구분자"
+      },
+      "typefaces": "글꼴",
+      "defaultTypeface": "시스템 기본값",
+      "typefaceHint": "각 종류의 글꼴을 선택한 후 제목, 본문, 링크에 적용하세요. 설치된 글꼴을 사용하며 PDF 서버에 없으면 대체 글꼴을 사용합니다.",
       "fontSize": "글꼴 크기",
       "baseFontSize": "기본",
       "headerScale": "제목",

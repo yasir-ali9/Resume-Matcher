@@ -4,6 +4,8 @@ import type { ResumeData, ResumeSectionHeadings } from '@/components/dashboard/r
 import { getSortedSections, getSectionMeta } from '@/lib/utils/section-helpers';
 import { formatDateRange } from '@/lib/utils';
 import { DynamicResumeSection } from './dynamic-resume-section';
+import { getTechnicalSkills } from '@/lib/utils/skill-rows';
+import { SkillRows } from './skill-rows';
 import { DescriptionList } from './description-list';
 import baseStyles from './styles/_base.module.css';
 import styles from './styles/swiss-two-column.module.css';
@@ -34,10 +36,7 @@ export const ResumeTwoColumn: React.FC<ResumeTwoColumnProps> = ({
 
   // Drop blank/whitespace-only entries so empty lines (e.g. from editing in the
   // builder) never render in the resume or PDF (issue #763).
-  const technicalSkills =
-    additional?.technicalSkills?.filter(
-      (item): item is string => typeof item === 'string' && item.trim() !== ''
-    ) ?? [];
+  const technicalSkills = getTechnicalSkills(additional);
   const languages =
     additional?.languages?.filter(
       (item): item is string => typeof item === 'string' && item.trim() !== ''
@@ -95,8 +94,28 @@ export const ResumeTwoColumn: React.FC<ResumeTwoColumnProps> = ({
   };
 
   // Helper function to render contact details
-  const renderContactDetail = (label: string, value?: string, hrefPrefix: string = '') => {
+  const renderContactDetail = (
+    label: string,
+    value?: string,
+    hrefPrefix: string = ''
+  ): React.ReactNode => {
     if (!value) return null;
+
+    if (label === 'Email') {
+      const addresses = value.split(/[\s,]+/).filter(Boolean);
+      if (addresses.length > 1) {
+        return (
+          <span className="inline-flex items-center gap-2">
+            {addresses.map((address, index) => (
+              <React.Fragment key={`${address}-${index}`}>
+                {index > 0 && <span aria-hidden="true">|</span>}
+                {renderContactDetail('Email', address, hrefPrefix)}
+              </React.Fragment>
+            ))}
+          </span>
+        );
+      }
+    }
 
     let finalHrefPrefix = hrefPrefix;
     if (
@@ -131,7 +150,13 @@ export const ResumeTwoColumn: React.FC<ResumeTwoColumnProps> = ({
             {displayText}
           </a>
         ) : (
-          <span>{displayText}</span>
+          <span
+            className={
+              label === 'Location' ? 'underline underline-offset-[3px] decoration-1' : undefined
+            }
+          >
+            {displayText}
+          </span>
         )}
       </span>
     );
@@ -172,12 +197,6 @@ export const ResumeTwoColumn: React.FC<ResumeTwoColumnProps> = ({
                 {renderContactDetail('Phone', personalInfo.phone, 'tel:')}
               </>
             )}
-            {personalInfo.location && (
-              <>
-                <span className={baseStyles['text-muted']}>,</span>
-                {renderContactDetail('Location', personalInfo.location)}
-              </>
-            )}
             {personalInfo.website && (
               <>
                 <span className={baseStyles['text-muted']}>,</span>
@@ -196,6 +215,12 @@ export const ResumeTwoColumn: React.FC<ResumeTwoColumnProps> = ({
                 {renderContactDetail('GitHub', personalInfo.github)}
               </>
             )}
+            {personalInfo.location && (
+              <>
+                <span className={baseStyles['text-muted']}>,</span>
+                {renderContactDetail('Location', personalInfo.location)}
+              </>
+            )}
           </div>
         </header>
       )}
@@ -210,7 +235,7 @@ export const ResumeTwoColumn: React.FC<ResumeTwoColumnProps> = ({
               <h3 className={baseStyles['resume-section-title']}>
                 {getSectionDisplayName('summary', headingFallbacks.summary)}
               </h3>
-              <p className={`text-justify ${baseStyles['resume-text-sm']}`}>{summary}</p>
+              <p className={`text-left ${baseStyles['resume-text-sm']}`}>{summary}</p>
             </div>
           )}
 
@@ -269,7 +294,14 @@ export const ResumeTwoColumn: React.FC<ResumeTwoColumnProps> = ({
                         className={`flex justify-between items-baseline ${baseStyles['resume-row-tight']}`}
                       >
                         <div className="flex items-baseline gap-1.5">
-                          <h4 className={baseStyles['resume-item-title-sm']}>{project.name}</h4>
+                          <h4 className={baseStyles['resume-item-title-sm']}>
+                            {project.name}
+                            {project.label && (
+                              <span className="ml-2 text-xs font-normal text-[var(--resume-text-tertiary)]">
+                                {project.label}
+                              </span>
+                            )}
+                          </h4>
                           {(project.github || project.website) && (
                             <span className="flex gap-1">
                               {project.github && (
@@ -382,7 +414,16 @@ export const ResumeTwoColumn: React.FC<ResumeTwoColumnProps> = ({
                         </span>
                       )}
                     </h4>
-                    <p className={baseStyles['resume-item-subtitle-sm']}>{edu.degree}</p>
+                    <div className="flex justify-between gap-2">
+                      <p className={baseStyles['resume-item-subtitle-sm']}>{edu.degree}</p>
+                      {edu.location && (
+                        <p
+                          className={`${baseStyles['resume-item-subtitle-sm']} ${baseStyles['text-muted']}`}
+                        >
+                          {edu.location}
+                        </p>
+                      )}
+                    </div>
                     {edu.description && (
                       <p className={`${baseStyles['resume-text-xs']} ${baseStyles['resume-meta']}`}>
                         {edu.description}
@@ -398,13 +439,19 @@ export const ResumeTwoColumn: React.FC<ResumeTwoColumnProps> = ({
           {isSectionVisible('additional') && technicalSkills.length > 0 && (
             <div className={baseStyles['resume-section']}>
               <h3 className={baseStyles['resume-section-title-sm']}>{headingFallbacks.skills}</h3>
-              <div className="flex flex-wrap gap-1">
-                {technicalSkills.map((skill, index) => (
-                  <span key={index} className={baseStyles['resume-skill-pill']}>
-                    {skill}
-                  </span>
-                ))}
-              </div>
+              {Array.isArray(additional?.skillRows) ? (
+                <div className={baseStyles['resume-text-xs']}>
+                  <SkillRows rows={additional.skillRows} />
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-1">
+                  {technicalSkills.map((skill, index) => (
+                    <span key={index} className={baseStyles['resume-skill-pill']}>
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

@@ -2,7 +2,9 @@ import type {
   ImprovedResult,
   InterviewPrepData,
 } from '@/components/common/resume_previewer_context';
-import type { ResumeData } from '@/components/dashboard/resume-component';
+import type { ResumeData, SkillRow } from '@/components/dashboard/resume-component';
+import { resolveResumeColors } from '@/lib/types/resume-colors';
+import { DEFAULT_TYPEFACES } from '@/lib/types/resume-fonts';
 import { type TemplateSettings } from '@/lib/types/template-settings';
 import { type Locale } from '@/i18n/config';
 import { clearResumeWizardCompletion } from '@/lib/utils/resume-wizard-storage';
@@ -42,12 +44,14 @@ interface ProcessedResume {
     id: number;
     institution?: string;
     degree?: string;
+    location?: string;
     years?: string;
     description?: string | null;
   }>;
   personalProjects?: Array<{
     id: number;
     name?: string;
+    label?: string;
     role?: string;
     years?: string;
     github?: string | null;
@@ -57,6 +61,7 @@ interface ProcessedResume {
   }>;
   additional?: {
     technicalSkills?: string[];
+    skillRows?: SkillRow[] | null;
     languages?: string[];
     certificationsTraining?: string[];
     awards?: string[];
@@ -82,6 +87,16 @@ export interface PageFitSettings {
   headerFont: string;
   bodyFont: string;
   linkFont: string;
+  serifTypeface: string;
+  sansTypeface: string;
+  monoTypeface: string;
+  headingsColor: string;
+  subheadingsColor: string;
+  descriptionColor: string;
+  secondaryColor: string;
+  linksColor: string;
+  underlineColor: string;
+  dividerColor: string;
   compactMode: boolean;
   showContactIcons: boolean;
   accentColor: string;
@@ -118,6 +133,16 @@ export function toPageFitSettings(settings: TemplateSettings, locale?: string): 
     headerFont: settings.fontSize.headerFont,
     bodyFont: settings.fontSize.bodyFont,
     linkFont: settings.fontSize.linkFont ?? 'mono',
+    serifTypeface: settings.typefaces?.serif ?? DEFAULT_TYPEFACES.serif,
+    sansTypeface: settings.typefaces?.['sans-serif'] ?? DEFAULT_TYPEFACES['sans-serif'],
+    monoTypeface: settings.typefaces?.mono ?? DEFAULT_TYPEFACES.mono,
+    headingsColor: resolveResumeColors(settings.colors).headings,
+    subheadingsColor: resolveResumeColors(settings.colors).subheadings,
+    descriptionColor: resolveResumeColors(settings.colors).description,
+    secondaryColor: resolveResumeColors(settings.colors).secondary,
+    linksColor: resolveResumeColors(settings.colors).links,
+    underlineColor: resolveResumeColors(settings.colors).underline,
+    dividerColor: resolveResumeColors(settings.colors).divider,
     compactMode: settings.compactMode,
     showContactIcons: settings.showContactIcons,
     accentColor: settings.accentColor,
@@ -327,6 +352,18 @@ export function getResumePdfUrl(
     params.set('headerFont', settings.fontSize.headerFont);
     params.set('bodyFont', settings.fontSize.bodyFont);
     params.set('linkFont', settings.fontSize.linkFont ?? 'mono');
+    params.set('serifTypeface', settings.typefaces?.serif ?? 'default');
+    params.set('sansTypeface', settings.typefaces?.['sans-serif'] ?? 'default');
+    params.set('monoTypeface', settings.typefaces?.mono ?? 'default');
+    const colors = resolveResumeColors(settings.colors);
+    params.set('headingsColor', colors.headings);
+    params.set('subheadingsColor', colors.subheadings);
+    params.set('descriptionColor', colors.description);
+    params.set('secondaryColor', colors.secondary);
+    params.set('linksColor', colors.links);
+    params.set('underlineColor', colors.underline);
+    params.set('dividerColor', colors.divider);
+
     params.set('compactMode', String(settings.compactMode));
     params.set('showContactIcons', String(settings.showContactIcons));
     params.set('accentColor', settings.accentColor);

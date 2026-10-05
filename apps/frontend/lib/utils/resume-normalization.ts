@@ -6,6 +6,8 @@ import type {
   ResumeData,
 } from '@/components/dashboard/resume-component';
 
+import { normalizeSkillRows } from './skill-rows';
+
 type DescribedItem = {
   description?: unknown;
   descriptionStyles?: unknown;
@@ -153,7 +155,12 @@ export const normalizeResumeForSave = (resume: ResumeData): ResumeData => {
     additional: resume.additional
       ? {
           ...resume.additional,
-          technicalSkills: normalizeStringList(resume.additional.technicalSkills),
+          technicalSkills: Array.isArray(resume.additional.skillRows)
+            ? normalizeSkillRows(resume.additional.skillRows).flatMap((row) => row.skills)
+            : normalizeStringList(resume.additional.technicalSkills),
+          ...(Array.isArray(resume.additional.skillRows)
+            ? { skillRows: normalizeSkillRows(resume.additional.skillRows) }
+            : {}),
           languages: normalizeStringList(resume.additional.languages),
           certificationsTraining: normalizeStringList(resume.additional.certificationsTraining),
           awards: normalizeStringList(resume.additional.awards),

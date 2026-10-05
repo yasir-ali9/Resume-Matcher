@@ -162,6 +162,18 @@
       "wordsChars": "{wordCount} words / {charCount} chars"
     },
     "additionalForm": {
+      "otherInfoHeading": "Other section heading",
+      "otherInfoHeadingPlaceholder": "Languages, Certifications & Awards",
+      "skillRowsHint": "Add one row per group. Leave the heading blank for a bullet row. Separate skills with commas.",
+      "skillRow": "Row {number}",
+      "moveRowUp": "Move row up",
+      "moveRowDown": "Move row down",
+      "removeRow": "Remove row",
+      "rowHeading": "Heading (optional)",
+      "rowHeadingPlaceholder": "Languages, Frameworks, Cloud…",
+      "rowSkills": "Skills",
+      "rowSkillsPlaceholder": "React.js, Next.js, TypeScript",
+      "addSkillRow": "Add skill row",
       "instructions": "Enter items separated by new lines (press Enter for each item).",
       "placeholders": {
         "technicalSkills": "React\nTypeScript\nNode.js",
@@ -367,12 +379,14 @@
         "fields": {
           "institution": "Institution",
           "degree": "Degree",
+          "location": "Location",
           "description": "Description",
           "descriptionOptional": "Description (Optional)"
         },
         "placeholders": {
           "institution": "University Name",
           "degree": "Bachelor of Science",
+          "location": "City, Country",
           "years": "Aug 2016 - May 2020",
           "description": "Additional details..."
         }
@@ -382,11 +396,13 @@
         "addFirstProject": "Add First Project",
         "fields": {
           "projectName": "Project Name",
+          "label": "Label",
           "role": "Role",
           "website": "Website"
         },
         "placeholders": {
           "projectName": "Resume Matcher",
+          "label": "In progress, Open source, Production",
           "role": "Creator",
           "years": "Mar 2023",
           "github": "github.com/username/project",
@@ -451,6 +467,27 @@
       "spacingSection": "Section",
       "spacingItems": "Items",
       "spacingLines": "Lines",
+      "loadLocalFonts": "Load local fonts",
+      "loadingLocalFonts": "Loading fonts…",
+      "installedFonts": "Installed fonts",
+      "localFontsLoaded": "{count} local font families loaded. Choose any installed font in the selectors below.",
+      "localFontsUnsupported": "Local font access requires desktop Chrome or Edge over HTTPS or localhost.",
+      "localFontsDenied": "Font access was denied. Allow local fonts in your browser’s site settings, then try again.",
+      "localFontsFailed": "Could not load local fonts. Please try again.",
+      "textColors": "Text colors",
+      "resetColors": "Reset colors",
+      "colorLabels": {
+        "headings": "Main headings",
+        "subheadings": "Subheadings",
+        "description": "Descriptions",
+        "secondary": "Roles, dates & secondary text",
+        "links": "Links",
+        "underline": "Link underlines",
+        "divider": "Dividers / separators"
+      },
+      "typefaces": "Fonts",
+      "defaultTypeface": "System default",
+      "typefaceHint": "Choose a font for each family, then apply it with the Headers, Body, and Links controls. Uses installed fonts; PDF export falls back if the font is unavailable on the server.",
       "fontSize": "Font Size",
       "baseFontSize": "Base",
       "headerScale": "Headers",

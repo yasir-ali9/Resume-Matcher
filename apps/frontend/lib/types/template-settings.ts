@@ -5,6 +5,9 @@
  * These settings affect both the live preview and PDF generation.
  */
 
+import { DEFAULT_RESUME_COLORS, resolveResumeColors, type ResumeColors } from './resume-colors';
+import { DEFAULT_TYPEFACES, withSelectedTypeface, type TypefaceSettings } from './resume-fonts';
+
 export type TemplateType =
   | 'swiss-single'
   | 'swiss-two-column'
@@ -52,6 +55,8 @@ export interface TemplateSettings {
   margins: MarginSettings;
   spacing: SpacingSettings;
   fontSize: FontSizeSettings;
+  colors?: ResumeColors;
+  typefaces?: TypefaceSettings; // Named local fonts for each family
   compactMode: boolean; // Apply tighter spacing across the board
   showContactIcons: boolean; // Show icons next to contact info
   accentColor: AccentColor; // Accent color for Modern template
@@ -72,6 +77,8 @@ export const DEFAULT_TEMPLATE_SETTINGS: TemplateSettings = {
     bodyFont: 'sans-serif',
     linkFont: 'mono',
   },
+  typefaces: DEFAULT_TYPEFACES,
+  colors: DEFAULT_RESUME_COLORS,
   compactMode: false,
   showContactIcons: false,
   accentColor: 'blue',
@@ -205,6 +212,18 @@ export function settingsToCssVars(
   locale?: string
 ): React.CSSProperties {
   const s = settings || DEFAULT_TEMPLATE_SETTINGS;
+  const colors = resolveResumeColors(s.colors);
+  const fontMap = buildHeaderFontMap(locale);
+  const typefaces = s.typefaces ?? DEFAULT_TYPEFACES;
+  const selectedFonts = {
+    serif: withSelectedTypeface('serif', typefaces.serif, fontMap.serif),
+    'sans-serif': withSelectedTypeface(
+      'sans-serif',
+      typefaces['sans-serif'],
+      fontMap['sans-serif']
+    ),
+    mono: withSelectedTypeface('mono', typefaces.mono, fontMap.mono),
+  };
   const compact = s.compactMode ? COMPACT_MULTIPLIER : 1;
 
   // Margins remain literal; compact mode only affects spacing/line-height.
@@ -230,9 +249,19 @@ export function settingsToCssVars(
     '--font-size-base': FONT_SIZE_MAP[s.fontSize.base],
     '--header-scale': HEADER_SCALE_MAP[s.fontSize.headerScale],
     '--section-header-scale': SECTION_HEADER_SCALE_MAP[s.fontSize.headerScale],
-    '--header-font': buildHeaderFontMap(locale)[s.fontSize.headerFont],
-    '--body-font': buildBodyFontMap(locale)[s.fontSize.bodyFont],
-    '--link-font': buildBodyFontMap(locale)[s.fontSize.linkFont ?? 'mono'],
+    '--header-font': selectedFonts[s.fontSize.headerFont],
+    '--body-font': selectedFonts[s.fontSize.bodyFont],
+    '--link-font': selectedFonts[s.fontSize.linkFont ?? 'mono'],
+    '--resume-font-mono': selectedFonts.mono,
+    '--resume-text-primary': colors.headings,
+    '--resume-text-secondary': colors.subheadings,
+    '--resume-text-body': colors.description,
+    '--resume-text-tertiary': colors.secondary,
+    '--resume-link-color': colors.links,
+    '--resume-link-underline-color': colors.underline,
+    '--resume-divider-color': colors.divider,
+    '--resume-border-primary': colors.divider,
+    '--resume-border-secondary': colors.divider,
     '--margin-top': `${marginTop}mm`,
     '--margin-bottom': `${marginBottom}mm`,
     '--margin-left': `${marginLeft}mm`,

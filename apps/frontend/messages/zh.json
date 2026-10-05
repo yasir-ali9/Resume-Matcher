@@ -162,6 +162,18 @@
       "wordsChars": "{wordCount} 词 / {charCount} 字符"
     },
     "additionalForm": {
+      "otherInfoHeading": "其他部分标题",
+      "otherInfoHeadingPlaceholder": "语言、证书与奖项",
+      "skillRowsHint": "每组添加一行。标题留空时显示项目符号。技能名称用逗号分隔。",
+      "skillRow": "第 {number} 行",
+      "moveRowUp": "上移行",
+      "moveRowDown": "下移行",
+      "removeRow": "删除行",
+      "rowHeading": "标题（可选）",
+      "rowHeadingPlaceholder": "语言、框架、云服务…",
+      "rowSkills": "技能",
+      "rowSkillsPlaceholder": "React.js, Next.js, TypeScript",
+      "addSkillRow": "添加技能行",
       "instructions": "每行输入一条内容（按 Enter 换行）。",
       "placeholders": {
         "technicalSkills": "React\nTypeScript\nNode.js",
@@ -367,12 +379,14 @@
         "fields": {
           "institution": "学校/机构",
           "degree": "学位/专业",
+          "location": "地点",
           "description": "描述",
           "descriptionOptional": "描述（可选）"
         },
         "placeholders": {
           "institution": "某某大学",
           "degree": "工学学士",
+          "location": "城市，国家",
           "years": "2016年8月 - 2020年5月",
           "description": "补充说明..."
         }
@@ -382,11 +396,13 @@
         "addFirstProject": "添加第一个项目",
         "fields": {
           "projectName": "项目名称",
+          "label": "标签",
           "role": "角色",
           "website": "网站"
         },
         "placeholders": {
           "projectName": "Resume Matcher",
+          "label": "进行中、开源、已上线",
           "role": "作者",
           "years": "2023年3月",
           "github": "github.com/username/project",
@@ -451,6 +467,27 @@
       "spacingSection": "板块",
       "spacingItems": "条目",
       "spacingLines": "行距",
+      "loadLocalFonts": "加载本地字体",
+      "loadingLocalFonts": "正在加载…",
+      "installedFonts": "已安装的字体",
+      "localFontsLoaded": "已加载{count}个本地字体系列。",
+      "localFontsUnsupported": "需要在HTTPS或localhost上使用桌面版Chrome或Edge。",
+      "localFontsDenied": "访问被拒绝。请在浏览器网站设置中允许本地字体，然后重试。",
+      "localFontsFailed": "无法加载本地字体。请重试。",
+      "textColors": "文字颜色",
+      "resetColors": "重置颜色",
+      "colorLabels": {
+        "headings": "主标题",
+        "subheadings": "副标题",
+        "description": "描述",
+        "secondary": "职位、日期及辅助文字",
+        "links": "链接",
+        "underline": "链接下划线",
+        "divider": "分隔线 / 分隔符"
+      },
+      "typefaces": "字体",
+      "defaultTypeface": "系统默认",
+      "typefaceHint": "选择各类别的字体，然后应用于标题、正文和链接。使用已安装的字体；PDF服务器缺少所选字体时会使用备用字体。",
       "fontSize": "字号",
       "baseFontSize": "正文",
       "headerScale": "标题",

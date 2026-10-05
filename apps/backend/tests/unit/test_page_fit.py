@@ -33,6 +33,14 @@ def test_page_fit_settings_query_matches_pdf_endpoint_params() -> None:
     assert q["linkFont"] == "serif"
     assert PageFitSettings().to_query()["linkFont"] == "mono"
     assert PageFitSettings(template="software-engineer").to_query()["template"] == "software-engineer"
+    fonts = PageFitSettings(serifTypeface="georgia", sansTypeface="arial", monoTypeface="consolas").to_query()
+    assert fonts["serifTypeface"] == "georgia"
+    assert fonts["sansTypeface"] == "arial"
+    assert fonts["monoTypeface"] == "consolas"
+    assert PageFitSettings(serifTypeface="local:A Font & Co").to_query()["serifTypeface"] == "local:A Font & Co"
+    colors = PageFitSettings(headingsColor="#123456", linksColor="#334455").to_query()
+    assert colors["headingsColor"] == "#123456"
+    assert colors["linksColor"] == "#334455"
     assert "lang" not in PageFitSettings().to_query()
 
 

@@ -20,8 +20,8 @@ _ENTRY_FIELDS: dict[str, tuple[str, ...]] = {
 }
 _PROTECTED_FIELDS: dict[str, tuple[str, ...]] = {
     "workExperience": ("id", "title", "company", "location", "years"),
-    "education": ("id", "institution", "degree", "years"),
-    "personalProjects": ("id", "name", "role", "years", "github", "website"),
+    "education": ("id", "institution", "degree", "location", "years"),
+    "personalProjects": ("id", "name", "label", "role", "years", "github", "website"),
     "customItems": ("id", "title", "subtitle", "location", "years"),
 }
 _TOKEN_RE = re.compile(r"[\w+#./-]+", re.UNICODE)
@@ -445,10 +445,39 @@ def _merge_entries(
     return result
 
 
-def _merge_additional(source: Any, candidate: Any) -> dict[str, list[str]]:
+def preserve_skill_rows(source: dict[str, Any], result: dict[str, Any]) -> None:
+    """Retain skill grouping while allowing newly tailored skills to be added."""
+    rows = source.get("skillRows")
+    if not isinstance(rows, list):
+        rows = result.get("skillRows")
+    if not isinstance(rows, list):
+        return
+    rows = copy.deepcopy(rows)
+    grouped = {
+        _normalized(skill)
+        for row in rows
+        if isinstance(row, dict)
+        for skill in row.get("skills", [])
+        if isinstance(skill, str)
+    }
+    extras = []
+    for skill in result.get("technicalSkills", []):
+        if isinstance(skill, str) and _normalized(skill) not in grouped:
+            extras.append(skill)
+            grouped.add(_normalized(skill))
+    if extras:
+        row_id = "tailored-extra-skills"
+        existing_ids = {row.get("id") for row in rows if isinstance(row, dict)}
+        while row_id in existing_ids:
+            row_id += "-extra"
+        rows.append({"id": row_id, "heading": "", "skills": extras})
+    result["skillRows"] = rows
+
+
+def _merge_additional(source: Any, candidate: Any) -> dict[str, Any]:
     source_dict = source if isinstance(source, dict) else {}
     candidate_dict = candidate if isinstance(candidate, dict) else {}
-    result: dict[str, list[str]] = {}
+    result: dict[str, Any] = {}
     for field in ("technicalSkills", "languages", "certificationsTraining", "awards"):
         source_items = [
             item for item in source_dict.get(field, []) if isinstance(item, str)
@@ -475,6 +504,7 @@ def _merge_additional(source: Any, candidate: Any) -> dict[str, list[str]]:
                 remaining_candidate_items[key] -= 1
             else:
                 result[field].append(item)
+    preserve_skill_rows(source_dict, result)
     return result
 
 

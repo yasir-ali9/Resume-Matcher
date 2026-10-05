@@ -10,6 +10,7 @@ from collections.abc import Awaitable
 from pathlib import Path
 from typing import Any, NoReturn
 from uuid import uuid4
+from urllib.parse import quote
 
 from fastapi import APIRouter, File, HTTPException, Query, Request, UploadFile
 from fastapi.responses import Response
@@ -96,6 +97,7 @@ from app.services.refiner import (
 from app.services.resume_preservation import (
     finalize_ai_resume,
     grounding_review_warnings,
+    preserve_skill_rows,
     validate_confirmed_resume,
 )
 from app.services.ats import compute_ats_score
@@ -448,6 +450,7 @@ def _preserve_original_skills(
             logger.info("Restored %d dropped items in additional.%s", restored, field)
         result_additional[field] = current_items
 
+    preserve_skill_rows(orig_additional, result_additional)
     return result
 
 
@@ -2063,6 +2066,22 @@ async def download_resume_pdf(
     headerFont: str = Query("serif", pattern="^(serif|sans-serif|mono)$"),
     bodyFont: str = Query("sans-serif", pattern="^(serif|sans-serif|mono)$"),
     linkFont: str = Query("mono", pattern="^(serif|sans-serif|mono)$"),
+    serifTypeface: str = Query(
+        "default", pattern=r"^(default|georgia|times-new-roman|cambria|garamond|local:[^\x00-\x1f\x7f]{1,180})$"
+    ),
+    sansTypeface: str = Query(
+        "default", pattern=r"^(default|arial|calibri|segoe-ui|verdana|trebuchet-ms|local:[^\x00-\x1f\x7f]{1,180})$"
+    ),
+    headingsColor: str = Query("#000000", pattern=r"^#[0-9a-fA-F]{6}$"),
+    subheadingsColor: str = Query("#374151", pattern=r"^#[0-9a-fA-F]{6}$"),
+    descriptionColor: str = Query("#1f2937", pattern=r"^#[0-9a-fA-F]{6}$"),
+    secondaryColor: str = Query("#4b5563", pattern=r"^#[0-9a-fA-F]{6}$"),
+    linksColor: str = Query("#1f2937", pattern=r"^#[0-9a-fA-F]{6}$"),
+    underlineColor: str = Query("#6b7280", pattern=r"^#[0-9a-fA-F]{6}$"),
+    dividerColor: str = Query("#d1d5db", pattern=r"^#[0-9a-fA-F]{6}$"),
+    monoTypeface: str = Query(
+        "default", pattern=r"^(default|consolas|courier-new|lucida-console|local:[^\x00-\x1f\x7f]{1,180})$"
+    ),
     compactMode: bool = Query(False),
     showContactIcons: bool = Query(False),
     accentColor: str = Query("blue", pattern="^(blue|green|orange|red)$"),
@@ -2106,6 +2125,16 @@ async def download_resume_pdf(
         f"&headerFont={headerFont}"
         f"&bodyFont={bodyFont}"
         f"&linkFont={linkFont}"
+        f"&serifTypeface={quote(serifTypeface, safe='')}"
+        f"&sansTypeface={quote(sansTypeface, safe='')}"
+        f"&monoTypeface={quote(monoTypeface, safe='')}"
+        f"&headingsColor={quote(headingsColor, safe='')}"
+        f"&subheadingsColor={quote(subheadingsColor, safe='')}"
+        f"&descriptionColor={quote(descriptionColor, safe='')}"
+        f"&secondaryColor={quote(secondaryColor, safe='')}"
+        f"&linksColor={quote(linksColor, safe='')}"
+        f"&underlineColor={quote(underlineColor, safe='')}"
+        f"&dividerColor={quote(dividerColor, safe='')}"
         f"&compactMode={str(compactMode).lower()}"
         f"&showContactIcons={str(showContactIcons).lower()}"
         f"&accentColor={accentColor}"

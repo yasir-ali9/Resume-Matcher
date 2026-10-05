@@ -8,6 +8,8 @@ import type {
 } from '@/components/dashboard/resume-component';
 import { getSortedSections, getSectionMeta } from '@/lib/utils/section-helpers';
 import { formatDateRange } from '@/lib/utils';
+import { getTechnicalSkills } from '@/lib/utils/skill-rows';
+import { SkillRows } from './skill-rows';
 import { DescriptionList } from './description-list';
 import baseStyles from './styles/_base.module.css';
 import styles from './styles/vivid.module.css';
@@ -41,7 +43,7 @@ export const ResumeVivid: React.FC<ResumeVividProps> = ({
   const clean = (items?: string[]) =>
     (items ?? []).filter((item): item is string => typeof item === 'string' && item.trim() !== '');
 
-  const technicalSkills = clean(additional?.technicalSkills);
+  const technicalSkills = getTechnicalSkills(additional);
   const languages = clean(additional?.languages);
   const certificationsTraining = clean(additional?.certificationsTraining);
   const awards = clean(additional?.awards);
@@ -90,8 +92,28 @@ export const ResumeVivid: React.FC<ResumeVividProps> = ({
     GitHub: <Github size={11} />,
   };
 
-  const renderContactDetail = (label: string, value?: string, hrefPrefix: string = '') => {
+  const renderContactDetail = (
+    label: string,
+    value?: string,
+    hrefPrefix: string = ''
+  ): React.ReactNode => {
     if (!value) return null;
+
+    if (label === 'Email') {
+      const addresses = value.split(/[\s,]+/).filter(Boolean);
+      if (addresses.length > 1) {
+        return (
+          <span className="inline-flex items-center gap-2">
+            {addresses.map((address, index) => (
+              <React.Fragment key={`${address}-${index}`}>
+                {index > 0 && <span aria-hidden="true">|</span>}
+                {renderContactDetail('Email', address, hrefPrefix)}
+              </React.Fragment>
+            ))}
+          </span>
+        );
+      }
+    }
 
     let finalHrefPrefix = hrefPrefix;
     if (
@@ -126,7 +148,13 @@ export const ResumeVivid: React.FC<ResumeVividProps> = ({
             {displayText}
           </a>
         ) : (
-          <span>{displayText}</span>
+          <span
+            className={
+              label === 'Location' ? 'underline underline-offset-[3px] decoration-1' : undefined
+            }
+          >
+            {displayText}
+          </span>
         )}
       </span>
     );
@@ -176,7 +204,7 @@ export const ResumeVivid: React.FC<ResumeVividProps> = ({
               <h3 className={styles.sectionTitle}>
                 {getSectionDisplayName('summary', headingFallbacks.summary)}
               </h3>
-              <p className={`text-justify ${baseStyles['resume-text']}`}>{summary}</p>
+              <p className={`text-left ${baseStyles['resume-text']}`}>{summary}</p>
             </div>
           )}
 
@@ -229,7 +257,14 @@ export const ResumeVivid: React.FC<ResumeVividProps> = ({
                         className={`flex justify-between items-baseline ${baseStyles['resume-row-tight']}`}
                       >
                         <span className="flex items-baseline gap-1.5 min-w-0">
-                          <span className={styles.entryCompany}>{project.name}</span>
+                          <span className={styles.entryCompany}>
+                            {project.name}
+                            {project.label && (
+                              <span className="ml-2 text-xs font-normal text-[var(--resume-text-tertiary)]">
+                                {project.label}
+                              </span>
+                            )}
+                          </span>
                           {project.role && (
                             <>
                               <span className={styles.entrySep}>|</span>
@@ -316,7 +351,13 @@ export const ResumeVivid: React.FC<ResumeVividProps> = ({
           {isSectionVisible('additional') && technicalSkills.length > 0 && (
             <div className={baseStyles['resume-section']}>
               <h3 className={styles.sectionTitleSm}>{headingFallbacks.skills}</h3>
-              <p className={baseStyles['resume-text-xs']}>{technicalSkills.join(' • ')}</p>
+              {Array.isArray(additional.skillRows) ? (
+                <div className={baseStyles['resume-text-xs']}>
+                  <SkillRows rows={additional.skillRows} />
+                </div>
+              ) : (
+                <p className={baseStyles['resume-text-xs']}>{technicalSkills.join(' • ')}</p>
+              )}
             </div>
           )}
 
@@ -341,6 +382,11 @@ export const ResumeVivid: React.FC<ResumeVividProps> = ({
                       {edu.institution}
                     </h4>
                     <p className={baseStyles['resume-item-subtitle-sm']}>{edu.degree}</p>
+                    {edu.location && (
+                      <p className={`${baseStyles['resume-meta-sm']} ${baseStyles['text-muted']}`}>
+                        {edu.location}
+                      </p>
+                    )}
                     {edu.years && (
                       <p className={`${baseStyles['resume-meta-sm']}`}>
                         {formatDateRange(edu.years)}

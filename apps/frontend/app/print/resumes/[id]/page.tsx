@@ -10,6 +10,8 @@ import {
   type AccentColor,
   DEFAULT_TEMPLATE_SETTINGS,
 } from '@/lib/types/template-settings';
+import { DEFAULT_RESUME_COLORS, parseResumeColor } from '@/lib/types/resume-colors';
+import { parseTypeface } from '@/lib/types/resume-fonts';
 import { API_BASE } from '@/lib/api/client';
 import { translate } from '@/lib/i18n/server';
 import { resolveLocale } from '@/lib/i18n/locale';
@@ -32,6 +34,16 @@ type PageProps = {
     headerFont?: string;
     bodyFont?: string;
     linkFont?: string;
+    serifTypeface?: string;
+    sansTypeface?: string;
+    monoTypeface?: string;
+    headingsColor?: string;
+    subheadingsColor?: string;
+    descriptionColor?: string;
+    secondaryColor?: string;
+    linksColor?: string;
+    underlineColor?: string;
+    dividerColor?: string;
     compactMode?: string;
     showContactIcons?: string;
     accentColor?: string;
@@ -249,6 +261,38 @@ export default async function PrintResumePage({ params, searchParams }: PageProp
       headerFont: parseHeaderFont(resolvedSearchParams?.headerFont),
       bodyFont: parseBodyFont(resolvedSearchParams?.bodyFont),
       linkFont: parseLinkFont(resolvedSearchParams?.linkFont),
+    },
+    typefaces: {
+      serif: parseTypeface('serif', resolvedSearchParams?.serifTypeface),
+      'sans-serif': parseTypeface('sans-serif', resolvedSearchParams?.sansTypeface),
+      mono: parseTypeface('mono', resolvedSearchParams?.monoTypeface),
+    },
+    colors: {
+      headings: parseResumeColor(
+        resolvedSearchParams?.headingsColor,
+        DEFAULT_RESUME_COLORS.headings
+      ),
+      subheadings: parseResumeColor(
+        resolvedSearchParams?.subheadingsColor,
+        DEFAULT_RESUME_COLORS.subheadings
+      ),
+      description: parseResumeColor(
+        resolvedSearchParams?.descriptionColor,
+        DEFAULT_RESUME_COLORS.description
+      ),
+      secondary: parseResumeColor(
+        resolvedSearchParams?.secondaryColor,
+        DEFAULT_RESUME_COLORS.secondary
+      ),
+      links: parseResumeColor(resolvedSearchParams?.linksColor, DEFAULT_RESUME_COLORS.links),
+      divider: parseResumeColor(
+        resolvedSearchParams?.dividerColor,
+        DEFAULT_RESUME_COLORS.divider
+      ),
+      underline: parseResumeColor(
+        resolvedSearchParams?.underlineColor,
+        DEFAULT_RESUME_COLORS.underline
+      ),
     },
     compactMode: parseBoolean(
       resolvedSearchParams?.compactMode,

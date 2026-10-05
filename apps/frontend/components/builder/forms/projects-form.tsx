@@ -44,6 +44,7 @@ export const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) =>
       {
         id: newId,
         name: '',
+        label: '',
         role: '',
         years: '',
         github: '',
@@ -198,6 +199,18 @@ export const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) =>
                     value={item.name || ''}
                     onChange={(e) => handleChange(item.id, 'name', e.target.value)}
                     placeholder={t('builder.forms.projects.placeholders.projectName')}
+                    className="rounded-none border-black bg-white"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-mono text-xs uppercase tracking-wider text-steel-grey">
+                    {t('builder.forms.projects.fields.label')}{' '}
+                    <span className="text-steel-grey">({t('common.optional')})</span>
+                  </Label>
+                  <Input
+                    value={item.label || ''}
+                    onChange={(e) => handleChange(item.id, 'label', e.target.value)}
+                    placeholder={t('builder.forms.projects.placeholders.label')}
                     className="rounded-none border-black bg-white"
                   />
                 </div>

@@ -21,15 +21,19 @@
 .container,
 .container :global(p),
 .container :global(li),
-.container :global(a),
 .container :global(span),
 .container :global(div) {
   font-family: var(--body-font);
 }
 
+.container :global(a) {
+  font-family: var(--link-font);
+}
+
 .name {
   font-family: var(--header-font);
   font-size: calc(var(--font-size-base) * var(--header-scale));
+  line-height: 1.1;
   font-weight: 400;
   letter-spacing: 0.01em;
   color: var(--resume-text-primary);
@@ -46,14 +50,14 @@
 }
 
 .sep {
-  color: var(--resume-text-tertiary);
+  color: var(--resume-divider-color, var(--resume-text-tertiary));
   padding: 0 0.4em;
 }
 
-/* Medium section headings, 2px larger than entry labels. */
+/* Section headings share the entry label size; color carries the hierarchy. */
 .sectionTitle {
   font-family: var(--header-font);
-  font-size: calc(var(--font-size-base) + 2px);
+  font-size: var(--font-size-base);
   font-weight: 500;
   text-transform: none;
   letter-spacing: normal;
@@ -76,6 +80,23 @@
   font-variant: normal;
   letter-spacing: normal;
   color: var(--resume-text-tertiary);
+}
+
+.projectLabel {
+  margin-left: 0.5rem;
+  font-size: 0.8em;
+  font-weight: 400;
+  color: var(--resume-text-tertiary);
+}
+
+.educationLocation {
+  font-size: 0.8em;
+  font-weight: 400;
+  color: var(--resume-text-tertiary);
+}
+
+.educationSep {
+  color: var(--resume-divider-color, var(--resume-text-tertiary));
 }
 
 .entryMeta {
@@ -119,6 +140,19 @@
 .skillLabel {
   font-weight: 500;
   color: var(--resume-text-secondary);
+}
+
+.additionalColumns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 560px) {
+  .additionalColumns {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
 }
 
 @media print {

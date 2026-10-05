@@ -66,7 +66,8 @@ export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ data, onChan
           </Label>
           <Input
             id="email"
-            type="email"
+            type="text"
+            inputMode="email"
             value={data.email || ''}
             onChange={(e) => handleChange('email', e.target.value)}
             placeholder={t('builder.personalInfoForm.placeholders.email')}

@@ -260,13 +260,16 @@
 /* Inline links within content (from rich text editor) */
 .resume-body :global(a) {
   font-family: var(--link-font);
-  color: inherit;
+  color: var(--resume-link-color, var(--resume-text-body));
   text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--resume-link-underline-color, #6b7280);
+  text-decoration-skip-ink: none;
   text-underline-offset: calc(0.18em + 1px);
 }
 
 .resume-body :global(a:hover) {
-  color: var(--resume-text-primary);
+  color: var(--resume-link-color, var(--resume-text-body));
 }
 
 .text-muted {
@@ -315,8 +318,11 @@
 
   /* Ensure rich text formatting and links render correctly in PDF */
   .resume-body :global(a) {
-    color: inherit !important;
-    text-decoration: underline !important;
+    color: var(--resume-link-color, var(--resume-text-body)) !important;
+    /* Native underlines stay visible at every PDF zoom level. */
+    text-decoration-line: underline !important;
+    text-decoration-thickness: 1px !important;
+    text-decoration-color: var(--resume-link-underline-color, #6b7280) !important;
   }
 
   .resume-body :global(strong),

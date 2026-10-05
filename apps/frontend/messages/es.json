@@ -162,6 +162,18 @@
       "wordsChars": "{wordCount} palabras / {charCount} caracteres"
     },
     "additionalForm": {
+      "otherInfoHeading": "Título de la otra sección",
+      "otherInfoHeadingPlaceholder": "Idiomas, certificaciones y premios",
+      "skillRowsHint": "Añade una fila por grupo. Deja el título vacío para mostrar una viñeta. Separa las habilidades con comas.",
+      "skillRow": "Fila {number}",
+      "moveRowUp": "Subir fila",
+      "moveRowDown": "Bajar fila",
+      "removeRow": "Eliminar fila",
+      "rowHeading": "Título (opcional)",
+      "rowHeadingPlaceholder": "Lenguajes, Frameworks, Nube…",
+      "rowSkills": "Habilidades",
+      "rowSkillsPlaceholder": "React.js, Next.js, TypeScript",
+      "addSkillRow": "Añadir fila",
       "instructions": "Introduce elementos separados por saltos de línea (pulsa Enter para cada elemento).",
       "placeholders": {
         "technicalSkills": "React\nTypeScript\nNode.js",
@@ -367,12 +379,14 @@
         "fields": {
           "institution": "Institución",
           "degree": "Título",
+          "location": "Ubicación",
           "description": "Descripción",
           "descriptionOptional": "Descripción (opcional)"
         },
         "placeholders": {
           "institution": "Nombre de la universidad",
           "degree": "Grado en ...",
+          "location": "Ciudad, país",
           "years": "Ago 2016 - May 2020",
           "description": "Detalles adicionales..."
         }
@@ -382,11 +396,13 @@
         "addFirstProject": "Agregar primer proyecto",
         "fields": {
           "projectName": "Nombre del proyecto",
+          "label": "Etiqueta",
           "role": "Rol",
           "website": "Sitio web"
         },
         "placeholders": {
           "projectName": "Resume Matcher",
+          "label": "En progreso, Código abierto, En producción",
           "role": "Creador",
           "years": "Mar 2023",
           "github": "github.com/usuario/proyecto",
@@ -451,6 +467,27 @@
       "spacingSection": "Sección",
       "spacingItems": "Elementos",
       "spacingLines": "Líneas",
+      "loadLocalFonts": "Cargar fuentes locales",
+      "loadingLocalFonts": "Cargando fuentes…",
+      "installedFonts": "Fuentes instaladas",
+      "localFontsLoaded": "Se cargaron {count} familias de fuentes locales.",
+      "localFontsUnsupported": "Requiere Chrome o Edge de escritorio con HTTPS o localhost.",
+      "localFontsDenied": "Acceso denegado. Permite fuentes locales en la configuración del sitio y vuelve a intentarlo.",
+      "localFontsFailed": "No se pudieron cargar las fuentes. Inténtalo de nuevo.",
+      "textColors": "Colores de texto",
+      "resetColors": "Restablecer colores",
+      "colorLabels": {
+        "headings": "Títulos principales",
+        "subheadings": "Subtítulos",
+        "description": "Descripciones",
+        "secondary": "Roles, fechas y texto secundario",
+        "links": "Enlaces",
+        "underline": "Subrayados de enlaces",
+        "divider": "Divisores / separadores"
+      },
+      "typefaces": "Fuentes",
+      "defaultTypeface": "Predeterminada del sistema",
+      "typefaceHint": "Elige una fuente para cada familia y aplícala con los controles de títulos, cuerpo y enlaces. Usa fuentes instaladas; el PDF usa una alternativa si no está disponible en el servidor.",
       "fontSize": "Tamaño de fuente",
       "baseFontSize": "Base",
       "headerScale": "Encabezados",

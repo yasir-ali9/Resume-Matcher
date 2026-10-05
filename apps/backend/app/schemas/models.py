@@ -191,6 +191,7 @@ class Education(BaseModel):
     id: int = 0
     institution: str = ""
     degree: str = ""
+    location: str = ""
     years: str = ""
     description: str | None = None
 
@@ -205,6 +206,7 @@ class Project(BaseModel):
 
     id: int = 0
     name: str = ""
+    label: str = ""
     role: str = ""
     years: str = ""
     github: str | None = None
@@ -232,10 +234,25 @@ class Project(BaseModel):
         return self
 
 
+class SkillRow(BaseModel):
+    """An editable skills row with an optional category heading."""
+
+    id: str
+    heading: str = ""
+    skills: list[str] = Field(default_factory=list)
+
+    @field_validator("skills", mode="before")
+    @classmethod
+    def _normalize_skills(cls, value: Any) -> list[str]:
+        return _coerce_string_list(value)
+
+
 class AdditionalInfo(BaseModel):
     """Additional information section."""
 
     technicalSkills: list[str] = Field(default_factory=list)
+    skillRows: list[SkillRow] | None = None
+    otherInfoHeading: str = ""
     languages: list[str] = Field(default_factory=list)
     certificationsTraining: list[str] = Field(default_factory=list)
     awards: list[str] = Field(default_factory=list)
@@ -250,6 +267,12 @@ class AdditionalInfo(BaseModel):
     @classmethod
     def _normalize_string_fields(cls, value: Any) -> list[str]:
         return _coerce_string_list(value)
+
+    @model_validator(mode="after")
+    def _sync_technical_skills(self) -> "AdditionalInfo":
+        if self.skillRows is not None:
+            self.technicalSkills = [skill for row in self.skillRows for skill in row.skills]
+        return self
 
 
 # Section Metadata Models for dynamic section management
@@ -578,6 +601,22 @@ class PageFitSettings(BaseModel):
     headerFont: Literal["serif", "sans-serif", "mono"] = "serif"
     bodyFont: Literal["serif", "sans-serif", "mono"] = "sans-serif"
     linkFont: Literal["serif", "sans-serif", "mono"] = "mono"
+    serifTypeface: str = Field(
+        "default", pattern=r"^(default|georgia|times-new-roman|cambria|garamond|local:[^\x00-\x1f\x7f]{1,180})$"
+    )
+    sansTypeface: str = Field(
+        "default", pattern=r"^(default|arial|calibri|segoe-ui|verdana|trebuchet-ms|local:[^\x00-\x1f\x7f]{1,180})$"
+    )
+    headingsColor: str = Field("#000000", pattern=r"^#[0-9a-fA-F]{6}$")
+    subheadingsColor: str = Field("#374151", pattern=r"^#[0-9a-fA-F]{6}$")
+    descriptionColor: str = Field("#1f2937", pattern=r"^#[0-9a-fA-F]{6}$")
+    secondaryColor: str = Field("#4b5563", pattern=r"^#[0-9a-fA-F]{6}$")
+    linksColor: str = Field("#1f2937", pattern=r"^#[0-9a-fA-F]{6}$")
+    underlineColor: str = Field("#6b7280", pattern=r"^#[0-9a-fA-F]{6}$")
+    dividerColor: str = Field("#d1d5db", pattern=r"^#[0-9a-fA-F]{6}$")
+    monoTypeface: str = Field(
+        "default", pattern=r"^(default|consolas|courier-new|lucida-console|local:[^\x00-\x1f\x7f]{1,180})$"
+    )
     compactMode: bool = False
     showContactIcons: bool = False
     accentColor: Literal["blue", "green", "orange", "red"] = "blue"

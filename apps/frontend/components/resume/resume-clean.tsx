@@ -7,6 +7,8 @@ import type {
 } from '@/components/dashboard/resume-component';
 import { getSortedSections } from '@/lib/utils/section-helpers';
 import { formatDateRange } from '@/lib/utils';
+import { SkillRows } from './skill-rows';
+import { getTechnicalSkills } from '@/lib/utils/skill-rows';
 import { DescriptionList } from './description-list';
 import baseStyles from './styles/_base.module.css';
 import styles from './styles/clean.module.css';
@@ -47,8 +49,28 @@ export const ResumeClean: React.FC<ResumeCleanProps> = ({
     GitHub: <Github size={12} />,
   };
 
-  const renderContactDetail = (label: string, value?: string, hrefPrefix: string = '') => {
+  const renderContactDetail = (
+    label: string,
+    value?: string,
+    hrefPrefix: string = ''
+  ): React.ReactNode => {
     if (!value) return null;
+
+    if (label === 'Email') {
+      const addresses = value.split(/[\s,]+/).filter(Boolean);
+      if (addresses.length > 1) {
+        return (
+          <span className="inline-flex items-center gap-2">
+            {addresses.map((address, index) => (
+              <React.Fragment key={`${address}-${index}`}>
+                {index > 0 && <span aria-hidden="true">|</span>}
+                {renderContactDetail('Email', address, hrefPrefix)}
+              </React.Fragment>
+            ))}
+          </span>
+        );
+      }
+    }
 
     let finalHrefPrefix = hrefPrefix;
     if (
@@ -83,19 +105,25 @@ export const ResumeClean: React.FC<ResumeCleanProps> = ({
             {displayText}
           </a>
         ) : (
-          <span>{displayText}</span>
+          <span
+            className={
+              label === 'Location' ? 'underline underline-offset-[3px] decoration-1' : undefined
+            }
+          >
+            {displayText}
+          </span>
         )}
       </span>
     );
   };
 
   const contactItems = [
-    renderContactDetail('Location', personalInfo?.location),
     renderContactDetail('Phone', personalInfo?.phone, 'tel:'),
     renderContactDetail('Email', personalInfo?.email, 'mailto:'),
     renderContactDetail('LinkedIn', personalInfo?.linkedin),
     renderContactDetail('GitHub', personalInfo?.github),
     renderContactDetail('Website', personalInfo?.website),
+    renderContactDetail('Location', personalInfo?.location),
   ].filter(Boolean);
 
   // Single-line entry header: COMPANY | Role (left), Location | Dates (right).
@@ -138,7 +166,7 @@ export const ResumeClean: React.FC<ResumeCleanProps> = ({
         return (
           <div key={section.id} className={baseStyles['resume-section']}>
             <h3 className={styles.sectionTitle}>{section.displayName}</h3>
-            <p className={`text-justify ${baseStyles['resume-text']}`}>{summary}</p>
+            <p className={`text-left ${baseStyles['resume-text']}`}>{summary}</p>
           </div>
         );
 
@@ -170,7 +198,14 @@ export const ResumeClean: React.FC<ResumeCleanProps> = ({
                     className={`flex justify-between items-baseline gap-3 ${baseStyles['resume-row-tight']}`}
                   >
                     <span className="flex items-baseline gap-2 min-w-0">
-                      <span className={styles.entryCompany}>{project.name}</span>
+                      <span className={styles.entryCompany}>
+                        {project.name}
+                        {project.label && (
+                          <span className="ml-2 text-xs font-normal text-[var(--resume-text-tertiary)]">
+                            {project.label}
+                          </span>
+                        )}
+                      </span>
                       {project.role && (
                         <>
                           <span className={styles.sep}>|</span>
@@ -237,7 +272,8 @@ export const ResumeClean: React.FC<ResumeCleanProps> = ({
             <div className={baseStyles['resume-items']}>
               {education.map((edu) => (
                 <div key={edu.id} className={baseStyles['resume-item']}>
-                  {renderEntryHeader(edu.institution, edu.degree, undefined, edu.years)}
+                  {renderEntryHeader(edu.institution, undefined, edu.location, edu.years)}
+                  {edu.degree && <p className={baseStyles['resume-text-sm']}>{edu.degree}</p>}
                   {edu.description && (
                     <p className={baseStyles['resume-text-sm']}>{edu.description}</p>
                   )}
@@ -318,7 +354,7 @@ const AdditionalSection: React.FC<{
   const clean = (items?: string[]) =>
     (items ?? []).filter((item): item is string => typeof item === 'string' && item.trim() !== '');
 
-  const technicalSkills = clean(additional.technicalSkills);
+  const technicalSkills = getTechnicalSkills(additional);
   const languages = clean(additional.languages);
   const certificationsTraining = clean(additional.certificationsTraining);
   const awards = clean(additional.awards);
@@ -349,7 +385,11 @@ const AdditionalSection: React.FC<{
     <div className={baseStyles['resume-section']}>
       <h3 className={styles.sectionTitle}>{displayName}</h3>
       <div className={`${baseStyles['resume-stack']} ${baseStyles['resume-text-sm']}`}>
-        {line(mergedLabels.technicalSkills, technicalSkills)}
+        {Array.isArray(additional.skillRows) ? (
+          <SkillRows rows={additional.skillRows} headingClassName={styles.skillLabel} />
+        ) : (
+          line(mergedLabels.technicalSkills, technicalSkills)
+        )}
         {line(mergedLabels.languages, languages)}
         {line(mergedLabels.certifications, certificationsTraining)}
         {line(mergedLabels.awards, awards)}

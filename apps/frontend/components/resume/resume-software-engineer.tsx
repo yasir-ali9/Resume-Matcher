@@ -7,6 +7,8 @@ import type {
 } from '@/components/dashboard/resume-component';
 import { getSortedSections } from '@/lib/utils/section-helpers';
 import { formatDateRange } from '@/lib/utils';
+import { SkillRows } from './skill-rows';
+import { getTechnicalSkills } from '@/lib/utils/skill-rows';
 import { DescriptionList } from './description-list';
 import baseStyles from './styles/_base.module.css';
 import styles from './styles/software-engineer.module.css';
@@ -59,8 +61,28 @@ export const ResumeSoftwareEngineer: React.FC<ResumeSoftwareEngineerProps> = ({
     GitHub: <Github size={12} />,
   };
 
-  const renderContactDetail = (label: string, value?: string, hrefPrefix: string = '') => {
+  const renderContactDetail = (
+    label: string,
+    value?: string,
+    hrefPrefix: string = ''
+  ): React.ReactNode => {
     if (!value) return null;
+
+    if (label === 'Email') {
+      const addresses = value.split(/[\s,]+/).filter(Boolean);
+      if (addresses.length > 1) {
+        return (
+          <span className="inline-flex items-center gap-2">
+            {addresses.map((address, index) => (
+              <React.Fragment key={`${address}-${index}`}>
+                {index > 0 && <span aria-hidden="true">|</span>}
+                {renderContactDetail('Email', address, hrefPrefix)}
+              </React.Fragment>
+            ))}
+          </span>
+        );
+      }
+    }
 
     let finalHrefPrefix = hrefPrefix;
     if (
@@ -95,19 +117,25 @@ export const ResumeSoftwareEngineer: React.FC<ResumeSoftwareEngineerProps> = ({
             {displayText}
           </a>
         ) : (
-          <span>{displayText}</span>
+          <span
+            className={
+              label === 'Location' ? 'underline underline-offset-[3px] decoration-1' : undefined
+            }
+          >
+            {displayText}
+          </span>
         )}
       </span>
     );
   };
 
   const contactItems = [
-    renderContactDetail('Location', personalInfo?.location),
     renderContactDetail('Phone', personalInfo?.phone, 'tel:'),
     renderContactDetail('Email', personalInfo?.email, 'mailto:'),
     renderContactDetail('LinkedIn', personalInfo?.linkedin),
     renderContactDetail('GitHub', personalInfo?.github),
     renderContactDetail('Website', personalInfo?.website),
+    renderContactDetail('Location', personalInfo?.location),
   ].filter(Boolean);
 
   // Single-line entry header: COMPANY | Role (left), Location | Dates (right).
@@ -150,7 +178,7 @@ export const ResumeSoftwareEngineer: React.FC<ResumeSoftwareEngineerProps> = ({
         return (
           <div key={section.id} className={baseStyles['resume-section']}>
             <h3 className={styles.sectionTitle}>{section.displayName}</h3>
-            <p className={`text-justify ${baseStyles['resume-text']}`}>{summary}</p>
+            <p className={`text-left ${baseStyles['resume-text']}`}>{summary}</p>
           </div>
         );
 
@@ -179,7 +207,12 @@ export const ResumeSoftwareEngineer: React.FC<ResumeSoftwareEngineerProps> = ({
               {personalProjects.map((project) => (
                 <div key={project.id} className={baseStyles['resume-item']}>
                   <div className={`${styles.projectHeader} ${baseStyles['resume-row-tight']}`}>
-                    <span className={styles.entryCompany}>{project.name}</span>
+                    <span className={styles.entryCompany}>
+                      {project.name}
+                      {project.label && (
+                        <span className={styles.projectLabel}>{project.label}</span>
+                      )}
+                    </span>
                     <span className={styles.projectMeta}>
                       {[
                         project.github ? (
@@ -261,7 +294,23 @@ export const ResumeSoftwareEngineer: React.FC<ResumeSoftwareEngineerProps> = ({
             <div className={baseStyles['resume-items']}>
               {education.map((edu) => (
                 <div key={edu.id} className={baseStyles['resume-item']}>
-                  {renderEntryHeader(edu.institution, edu.degree, undefined, edu.years)}
+                  <div
+                    className={`flex justify-between items-baseline gap-3 ${baseStyles['resume-row-tight']}`}
+                  >
+                    <span className="inline-flex min-w-0 items-baseline gap-2">
+                      <span className={styles.entryCompany}>{edu.institution}</span>
+                      {edu.location && (
+                        <>
+                          <span className={styles.educationSep}>|</span>
+                          <span className={styles.educationLocation}>{edu.location}</span>
+                        </>
+                      )}
+                    </span>
+                    {edu.years && (
+                      <span className={styles.entryMeta}>{formatDateRange(edu.years)}</span>
+                    )}
+                  </div>
+                  {edu.degree && <p className={baseStyles['resume-text-sm']}>{edu.degree}</p>}
                   {edu.description && (
                     <p className={baseStyles['resume-text-sm']}>{edu.description}</p>
                   )}
@@ -302,7 +351,7 @@ export const ResumeSoftwareEngineer: React.FC<ResumeSoftwareEngineerProps> = ({
     <div className={styles.container}>
       {personalInfo && (
         <header className={`text-center ${baseStyles['resume-header']}`}>
-          {personalInfo.name && <h1 className={`${styles.name} mb-1`}>{personalInfo.name}</h1>}
+          {personalInfo.name && <h1 className={`${styles.name} mb-0.5`}>{personalInfo.name}</h1>}
           {personalInfo.title && (
             <div className={`${styles.tagline} mb-1`}>{personalInfo.title}</div>
           )}
@@ -342,7 +391,7 @@ const AdditionalSection: React.FC<{
   const clean = (items?: string[]) =>
     (items ?? []).filter((item): item is string => typeof item === 'string' && item.trim() !== '');
 
-  const technicalSkills = clean(additional.technicalSkills);
+  const technicalSkills = getTechnicalSkills(additional);
   const languages = clean(additional.languages);
   const certificationsTraining = clean(additional.certificationsTraining);
   const awards = clean(additional.awards);
@@ -370,15 +419,32 @@ const AdditionalSection: React.FC<{
     ) : null;
 
   return (
-    <div className={baseStyles['resume-section']}>
-      <h3 className={styles.sectionTitle}>{displayName}</h3>
-      <div className={`${baseStyles['resume-stack']} ${baseStyles['resume-text-sm']}`}>
-        {line(mergedLabels.technicalSkills, technicalSkills)}
-        {line(mergedLabels.languages, languages)}
-        {line(mergedLabels.certifications, certificationsTraining)}
-        {line(mergedLabels.awards, awards)}
-      </div>
-    </div>
+    <>
+      {technicalSkills.length > 0 && (
+        <div className={baseStyles['resume-section']}>
+          <h3 className={styles.sectionTitle}>{displayName}</h3>
+          <div className={`${baseStyles['resume-stack']} ${baseStyles['resume-text-sm']}`}>
+            {Array.isArray(additional.skillRows) ? (
+              <SkillRows rows={additional.skillRows} headingClassName={styles.skillLabel} />
+            ) : (
+              line(mergedLabels.technicalSkills, technicalSkills)
+            )}
+          </div>
+        </div>
+      )}
+      {(languages.length > 0 || certificationsTraining.length > 0 || awards.length > 0) && (
+        <div className={baseStyles['resume-section']}>
+          <h3 className={styles.sectionTitle}>
+            {additional.otherInfoHeading?.trim() || 'Languages, Certifications & Awards'}
+          </h3>
+          <div className={`${styles.additionalColumns} ${baseStyles['resume-text-sm']}`}>
+            {line(mergedLabels.languages, languages)}
+            {line(mergedLabels.certifications, certificationsTraining)}
+            {line(mergedLabels.awards, awards)}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

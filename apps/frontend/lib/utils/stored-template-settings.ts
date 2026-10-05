@@ -1,3 +1,5 @@
+import { resolveResumeColors } from '@/lib/types/resume-colors';
+import { DEFAULT_TYPEFACES, parseTypeface } from '@/lib/types/resume-fonts';
 import { safeStorage } from '@/lib/utils/resume-draft-storage';
 import { DEFAULT_TEMPLATE_SETTINGS, type TemplateSettings } from '@/lib/types/template-settings';
 
@@ -16,6 +18,13 @@ export function readStoredTemplateSettings(): TemplateSettings {
         margins: { ...DEFAULT_TEMPLATE_SETTINGS.margins, ...parsed.margins },
         spacing: { ...DEFAULT_TEMPLATE_SETTINGS.spacing, ...parsed.spacing },
         fontSize: { ...DEFAULT_TEMPLATE_SETTINGS.fontSize, ...parsed.fontSize },
+        colors: resolveResumeColors(parsed.colors),
+        typefaces: {
+          ...DEFAULT_TYPEFACES,
+          serif: parseTypeface('serif', parsed.typefaces?.serif),
+          'sans-serif': parseTypeface('sans-serif', parsed.typefaces?.['sans-serif']),
+          mono: parseTypeface('mono', parsed.typefaces?.mono),
+        },
       };
     }
   } catch {

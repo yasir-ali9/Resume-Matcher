@@ -25,8 +25,21 @@ import {
   PAGE_SIZE_INFO,
   ACCENT_COLOR_MAP,
 } from '@/lib/types/template-settings';
+import {
+  DEFAULT_TYPEFACES,
+  FONT_FACE_OPTIONS,
+  getLocalFontName,
+  parseTypeface,
+  type FontCategory,
+} from '@/lib/types/resume-fonts';
 import { TemplateThumbnail } from './template-selector';
 import { useTranslations } from '@/lib/i18n';
+import {
+  DEFAULT_RESUME_COLORS,
+  resolveResumeColors,
+  type ResumeColorKey,
+} from '@/lib/types/resume-colors';
+import { useLocalFonts } from '@/hooks/use-local-fonts';
 
 interface FormattingControlsProps {
   settings: TemplateSettings;
@@ -48,6 +61,7 @@ interface FormattingControlsProps {
  */
 export const FormattingControls: React.FC<FormattingControlsProps> = ({ settings, onChange }) => {
   const { t } = useTranslations();
+  const localFonts = useLocalFonts();
   const [isExpanded, setIsExpanded] = useState(true);
   const compactMultiplier = settings.compactMode ? COMPACT_MULTIPLIER : 1;
   const sectionGapRem =
@@ -110,6 +124,21 @@ export const FormattingControls: React.FC<FormattingControlsProps> = ({ settings
       ...settings,
       fontSize: { ...settings.fontSize, linkFont },
     });
+  };
+
+  const handleTypefaceChange = (category: FontCategory, value: string) => {
+    onChange({
+      ...settings,
+      typefaces: {
+        ...DEFAULT_TYPEFACES,
+        ...settings.typefaces,
+        [category]: parseTypeface(category, value),
+      },
+    });
+  };
+
+  const handleColorChange = (key: ResumeColorKey, value: string) => {
+    onChange({ ...settings, colors: { ...resolveResumeColors(settings.colors), [key]: value } });
   };
 
   const handleCompactModeToggle = () => {
@@ -449,6 +478,114 @@ export const FormattingControls: React.FC<FormattingControlsProps> = ({ settings
                   ))}
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-mono text-xs font-bold uppercase tracking-wider mb-3 text-ink-soft">
+              {t('builder.formatting.typefaces')}
+            </h4>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mb-3"
+              disabled={!localFonts.supported || localFonts.loading}
+              onClick={localFonts.loadFonts}
+            >
+              {t(
+                localFonts.loading
+                  ? 'builder.formatting.loadingLocalFonts'
+                  : 'builder.formatting.loadLocalFonts'
+              )}
+            </Button>
+            <div role="status" aria-live="polite" className="mb-3 text-xs text-ink-soft">
+              {localFonts.supported === false && t('builder.formatting.localFontsUnsupported')}
+              {localFonts.status === 'loaded' &&
+                t('builder.formatting.localFontsLoaded', { count: localFonts.families.length })}
+              {localFonts.status === 'denied' && t('builder.formatting.localFontsDenied')}
+              {localFonts.status === 'failed' && t('builder.formatting.localFontsFailed')}
+            </div>
+            <div className="space-y-3">
+              {(['serif', 'sans-serif', 'mono'] as const).map((category) => (
+                <label key={category} className="flex flex-wrap items-center gap-2">
+                  <span className="font-mono text-xs w-16 text-ink-soft">
+                    {getFontLabel(category)}:
+                  </span>
+                  <select
+                    aria-label={`${getFontLabel(category)} ${t('builder.formatting.typefaces')}`}
+                    value={settings.typefaces?.[category] ?? 'default'}
+                    onChange={(event) => handleTypefaceChange(category, event.target.value)}
+                    className="min-w-0 flex-1 border border-steel-grey bg-white px-2 py-1 text-sm text-ink-soft focus:outline-2 focus:outline-blue-700"
+                  >
+                    {FONT_FACE_OPTIONS[category].map((font) => (
+                      <option
+                        key={font.id}
+                        value={font.id}
+                        style={font.id !== 'default' ? { fontFamily: `"${font.name}"` } : undefined}
+                      >
+                        {font.id === 'default'
+                          ? t('builder.formatting.defaultTypeface')
+                          : font.name}
+                      </option>
+                    ))}
+                    {getLocalFontName(settings.typefaces?.[category]) &&
+                      !localFonts.families.includes(
+                        getLocalFontName(settings.typefaces?.[category])!
+                      ) && (
+                        <option value={settings.typefaces?.[category]}>
+                          {getLocalFontName(settings.typefaces?.[category])}
+                        </option>
+                      )}
+                    {localFonts.families.length > 0 && (
+                      <optgroup label={t('builder.formatting.installedFonts')}>
+                        {localFonts.families.map((family) => (
+                          <option key={family} value={`local:${family}`}>
+                            {family}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                  </select>
+                </label>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-ink-soft">{t('builder.formatting.typefaceHint')}</p>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-ink-soft">
+                {t('builder.formatting.textColors')}
+              </h4>
+              <button
+                type="button"
+                className="text-xs text-ink-soft underline"
+                onClick={() => onChange({ ...settings, colors: { ...DEFAULT_RESUME_COLORS } })}
+              >
+                {t('builder.formatting.resetColors')}
+              </button>
+            </div>
+            <div className="space-y-3">
+              {(Object.keys(DEFAULT_RESUME_COLORS) as ResumeColorKey[]).map((key) => (
+                <div key={key} className="flex items-center justify-between gap-3">
+                  <span className="text-xs text-ink-soft">
+                    {t(`builder.formatting.colorLabels.${key}`)}
+                  </span>
+                  <label className="flex cursor-pointer items-center gap-2">
+                    <span className="font-mono text-xs text-ink-soft">
+                      {resolveResumeColors(settings.colors)[key]}
+                    </span>
+                    <input
+                      type="color"
+                      aria-label={t(`builder.formatting.colorLabels.${key}`)}
+                      value={resolveResumeColors(settings.colors)[key]}
+                      onChange={(event) => handleColorChange(key, event.target.value)}
+                      className="h-8 w-10 cursor-pointer border border-steel-grey bg-white p-0.5"
+                    />
+                  </label>
+                </div>
+              ))}
             </div>
           </div>
 

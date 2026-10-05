@@ -7,6 +7,8 @@ import type {
 } from '@/components/dashboard/resume-component';
 import { getSortedSections } from '@/lib/utils/section-helpers';
 import { formatDateRange } from '@/lib/utils';
+import { SkillRows } from './skill-rows';
+import { getTechnicalSkills } from '@/lib/utils/skill-rows';
 import { DescriptionList } from './description-list';
 import baseStyles from './styles/_base.module.css';
 import styles from './styles/modern.module.css';
@@ -47,8 +49,28 @@ export const ResumeModern: React.FC<ResumeModernProps> = ({
   };
 
   // Helper function to render contact details
-  const renderContactDetail = (label: string, value?: string, hrefPrefix: string = '') => {
+  const renderContactDetail = (
+    label: string,
+    value?: string,
+    hrefPrefix: string = ''
+  ): React.ReactNode => {
     if (!value) return null;
+
+    if (label === 'Email') {
+      const addresses = value.split(/[\s,]+/).filter(Boolean);
+      if (addresses.length > 1) {
+        return (
+          <span className="inline-flex items-center gap-2">
+            {addresses.map((address, index) => (
+              <React.Fragment key={`${address}-${index}`}>
+                {index > 0 && <span aria-hidden="true">|</span>}
+                {renderContactDetail('Email', address, hrefPrefix)}
+              </React.Fragment>
+            ))}
+          </span>
+        );
+      }
+    }
 
     let finalHrefPrefix = hrefPrefix;
     if (
@@ -83,7 +105,14 @@ export const ResumeModern: React.FC<ResumeModernProps> = ({
             {displayText}
           </a>
         ) : (
-          <span style={{ color: 'var(--resume-text-primary)' }}>{displayText}</span>
+          <span
+            className={
+              label === 'Location' ? 'underline underline-offset-[3px] decoration-1' : undefined
+            }
+            style={{ color: 'var(--resume-text-primary)' }}
+          >
+            {displayText}
+          </span>
         )}
       </span>
     );
@@ -101,7 +130,7 @@ export const ResumeModern: React.FC<ResumeModernProps> = ({
         return (
           <div key={section.id} className={baseStyles['resume-section']}>
             <h3 className={styles['section-title-accent']}>{section.displayName}</h3>
-            <p className={`text-justify ${baseStyles['resume-text']}`}>{summary}</p>
+            <p className={`text-left ${baseStyles['resume-text']}`}>{summary}</p>
           </div>
         );
 
@@ -146,7 +175,14 @@ export const ResumeModern: React.FC<ResumeModernProps> = ({
                     className={`flex justify-between items-baseline ${baseStyles['resume-row-tight']}`}
                   >
                     <div className="flex items-baseline gap-2">
-                      <h4 className={baseStyles['resume-item-title']}>{project.name}</h4>
+                      <h4 className={baseStyles['resume-item-title']}>
+                        {project.name}
+                        {project.label && (
+                          <span className="ml-2 text-xs font-normal text-[var(--resume-text-tertiary)]">
+                            {project.label}
+                          </span>
+                        )}
+                      </h4>
                       {(project.github || project.website) && (
                         <span className="flex gap-1.5">
                           {project.github && (
@@ -228,6 +264,9 @@ export const ResumeModern: React.FC<ResumeModernProps> = ({
                     className={`flex justify-between ${baseStyles['resume-item-subtitle']} ${baseStyles['resume-row-tight']}`}
                   >
                     <span>{edu.degree}</span>
+                    {edu.location && (
+                      <span className={baseStyles['text-muted']}>{edu.location}</span>
+                    )}
                   </div>
                   {edu.description && (
                     <p className={baseStyles['resume-text-sm']}>{edu.description}</p>
@@ -295,12 +334,6 @@ export const ResumeModern: React.FC<ResumeModernProps> = ({
                 {renderContactDetail('Phone', personalInfo.phone, 'tel:')}
               </>
             )}
-            {personalInfo.location && (
-              <>
-                <span className={baseStyles['text-muted']}>,</span>
-                {renderContactDetail('Location', personalInfo.location)}
-              </>
-            )}
             {personalInfo.website && (
               <>
                 <span className={baseStyles['text-muted']}>,</span>
@@ -317,6 +350,12 @@ export const ResumeModern: React.FC<ResumeModernProps> = ({
               <>
                 <span className={baseStyles['text-muted']}>,</span>
                 {renderContactDetail('GitHub', personalInfo.github)}
+              </>
+            )}
+            {personalInfo.location && (
+              <>
+                <span className={baseStyles['text-muted']}>,</span>
+                {renderContactDetail('Location', personalInfo.location)}
               </>
             )}
           </div>
@@ -342,7 +381,6 @@ const AdditionalSection: React.FC<{
   if (!additional) return null;
 
   const {
-    technicalSkills: rawTechnicalSkills = [],
     languages: rawLanguages = [],
     certificationsTraining: rawCertificationsTraining = [],
     awards: rawAwards = [],
@@ -350,9 +388,7 @@ const AdditionalSection: React.FC<{
 
   // Drop blank/whitespace-only entries so empty lines (e.g. from editing in the
   // builder) never render in the resume or PDF (issue #763).
-  const technicalSkills = rawTechnicalSkills.filter(
-    (item): item is string => typeof item === 'string' && item.trim() !== ''
-  );
+  const technicalSkills = getTechnicalSkills(additional);
   const languages = rawLanguages.filter(
     (item): item is string => typeof item === 'string' && item.trim() !== ''
   );
@@ -382,11 +418,15 @@ const AdditionalSection: React.FC<{
     <div className={baseStyles['resume-section']}>
       <h3 className={styles['section-title-accent']}>{displayName}</h3>
       <div className={`${baseStyles['resume-stack']} ${baseStyles['resume-text-sm']}`}>
-        {technicalSkills.length > 0 && (
-          <div className="flex">
-            <span className="font-bold w-32 shrink-0">{mergedLabels.technicalSkills}</span>
-            <span>{technicalSkills.join(', ')}</span>
-          </div>
+        {Array.isArray(additional.skillRows) ? (
+          <SkillRows rows={additional.skillRows} />
+        ) : (
+          technicalSkills.length > 0 && (
+            <div className="flex">
+              <span className="font-bold w-32 shrink-0">{mergedLabels.technicalSkills}</span>
+              <span>{technicalSkills.join(', ')}</span>
+            </div>
+          )
         )}
         {languages.length > 0 && (
           <div className="flex">

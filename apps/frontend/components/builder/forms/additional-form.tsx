@@ -3,7 +3,9 @@
 import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { AdditionalInfo } from '@/components/dashboard/resume-component';
+import { Input } from '@/components/ui/input';
+import { SkillRowsForm } from './skill-rows-form';
+import { AdditionalInfo, type SkillRow } from '@/components/dashboard/resume-component';
 import { useTranslations } from '@/lib/i18n';
 
 interface AdditionalFormProps {
@@ -14,8 +16,31 @@ interface AdditionalFormProps {
 export const AdditionalForm: React.FC<AdditionalFormProps> = ({ data, onChange }) => {
   const { t } = useTranslations();
 
+  const skillRows: SkillRow[] = Array.isArray(data.skillRows)
+    ? data.skillRows
+    : data.technicalSkills?.length
+      ? [
+          {
+            id: 'legacy-skills',
+            heading: t('resume.additional.technicalSkills').replace(/:\s*$/, ''),
+            skills: data.technicalSkills,
+          },
+        ]
+      : [];
+
+  const handleSkillRowsChange = (rows: SkillRow[]) => {
+    onChange({
+      ...data,
+      skillRows: rows,
+      technicalSkills: rows.flatMap((row) => row.skills).filter((skill) => skill.trim()),
+    });
+  };
+
   // Helper to handle array conversions (text -> string[])
-  const handleArrayChange = (field: keyof AdditionalInfo, value: string) => {
+  const handleArrayChange = (
+    field: 'languages' | 'certificationsTraining' | 'awards',
+    value: string
+  ) => {
     // Split by newlines only. Blank/whitespace lines are preserved while editing
     // so pressing Enter creates a new line (issue #763); consumers filter empty
     // entries at render time, and the backend drops them on save.
@@ -45,20 +70,24 @@ export const AdditionalForm: React.FC<AdditionalFormProps> = ({ data, onChange }
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
+        <div className="space-y-2 md:col-span-2">
+          <h4 className="font-mono text-xs uppercase tracking-wider text-steel-grey">
+            {t('resume.additional.technicalSkills')}
+          </h4>
+          <SkillRowsForm rows={skillRows} onChange={handleSkillRowsChange} />
+        </div>
+        <div className="space-y-2 md:col-span-2">
           <Label
-            htmlFor="technicalSkills"
+            htmlFor="otherInfoHeading"
             className="font-mono text-xs uppercase tracking-wider text-steel-grey"
           >
-            {t('resume.additional.technicalSkills')}
+            {t('builder.additionalForm.otherInfoHeading')}
           </Label>
-          <Textarea
-            id="technicalSkills"
-            value={formatArray(data.technicalSkills)}
-            onChange={(e) => handleArrayChange('technicalSkills', e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={t('builder.additionalForm.placeholders.technicalSkills')}
-            className="min-h-[120px] text-black rounded-none border-black bg-white focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-700"
+          <Input
+            id="otherInfoHeading"
+            value={data.otherInfoHeading ?? ''}
+            onChange={(event) => onChange({ ...data, otherInfoHeading: event.target.value })}
+            placeholder={t('builder.additionalForm.otherInfoHeadingPlaceholder')}
           />
         </div>
         <div className="space-y-2">

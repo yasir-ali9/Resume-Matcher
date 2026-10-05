@@ -16,6 +16,7 @@ import {
   settingsToCssVars,
 } from '@/lib/types/template-settings';
 import baseStyles from '@/components/resume/styles/_base.module.css';
+import { DEFAULT_TYPEFACES } from '@/lib/types/resume-fonts';
 
 export interface PersonalInfo {
   name?: string;
@@ -42,6 +43,7 @@ export interface Education {
   id: number;
   institution?: string;
   degree?: string;
+  location?: string;
   years?: string;
   description?: string;
 }
@@ -49,6 +51,7 @@ export interface Education {
 export interface Project {
   id: number;
   name?: string;
+  label?: string;
   role?: string;
   years?: string;
   github?: string;
@@ -57,8 +60,16 @@ export interface Project {
   descriptionStyles?: ('bullet' | 'plain')[];
 }
 
+export interface SkillRow {
+  id: string;
+  heading?: string;
+  skills: string[];
+}
+
 export interface AdditionalInfo {
   technicalSkills?: string[];
+  skillRows?: SkillRow[] | null;
+  otherInfoHeading?: string;
   languages?: string[];
   certificationsTraining?: string[];
   awards?: string[];
@@ -174,6 +185,7 @@ const Resume: React.FC<ResumeProps> = ({
     margins: { ...DEFAULT_TEMPLATE_SETTINGS.margins, ...settings?.margins },
     spacing: { ...DEFAULT_TEMPLATE_SETTINGS.spacing, ...settings?.spacing },
     fontSize: { ...DEFAULT_TEMPLATE_SETTINGS.fontSize, ...settings?.fontSize },
+    typefaces: { ...DEFAULT_TYPEFACES, ...settings?.typefaces },
   };
 
   // If template is provided as prop but not in settings, use the prop

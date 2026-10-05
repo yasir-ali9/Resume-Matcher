@@ -21,10 +21,13 @@
 .container,
 .container :global(p),
 .container :global(li),
-.container :global(a),
 .container :global(span),
 .container :global(div) {
   font-family: var(--body-font);
+}
+
+.container :global(a) {
+  font-family: var(--link-font);
 }
 
 .name {
