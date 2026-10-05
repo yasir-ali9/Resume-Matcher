@@ -452,6 +452,7 @@
       "headerScale": "En-têtes",
       "headerFontFamily": "En-têtes",
       "bodyFontFamily": "Corps",
+      "linkFontFamily": "Liens",
       "fontNames": {
         "serif": "Serif",
         "sans": "Sans",

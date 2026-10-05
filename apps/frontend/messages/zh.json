@@ -452,6 +452,7 @@
       "headerScale": "标题",
       "headerFontFamily": "标题字体",
       "bodyFontFamily": "正文字体",
+      "linkFontFamily": "链接",
       "fontNames": {
         "serif": "衬线",
         "sans": "无衬线",

@@ -452,6 +452,7 @@
       "headerScale": "見出し",
       "headerFontFamily": "見出し",
       "bodyFontFamily": "本文",
+      "linkFontFamily": "リンク",
       "fontNames": {
         "serif": "セリフ",
         "sans": "サンセリフ",

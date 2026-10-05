@@ -6,6 +6,7 @@ import {
   type SpacingLevel,
   type HeaderFontFamily,
   type BodyFontFamily,
+  type LinkFontFamily,
   type AccentColor,
   DEFAULT_TEMPLATE_SETTINGS,
 } from '@/lib/types/template-settings';
@@ -30,6 +31,7 @@ type PageProps = {
     headerScale?: string;
     headerFont?: string;
     bodyFont?: string;
+    linkFont?: string;
     compactMode?: string;
     showContactIcons?: string;
     accentColor?: string;
@@ -56,6 +58,11 @@ function parseBodyFont(value: string | undefined): BodyFontFamily {
     return value;
   }
   return DEFAULT_TEMPLATE_SETTINGS.fontSize.bodyFont;
+}
+
+function parseLinkFont(value: string | undefined): LinkFontFamily {
+  if (value === 'serif' || value === 'sans-serif' || value === 'mono') return value;
+  return DEFAULT_TEMPLATE_SETTINGS.fontSize.linkFont;
 }
 
 /**
@@ -240,6 +247,7 @@ export default async function PrintResumePage({ params, searchParams }: PageProp
       ),
       headerFont: parseHeaderFont(resolvedSearchParams?.headerFont),
       bodyFont: parseBodyFont(resolvedSearchParams?.bodyFont),
+      linkFont: parseLinkFont(resolvedSearchParams?.linkFont),
     },
     compactMode: parseBoolean(
       resolvedSearchParams?.compactMode,

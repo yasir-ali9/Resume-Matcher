@@ -11,6 +11,8 @@
   --header-font: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
   --body-font: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
 
+  --link-font: var(--resume-font-mono);
+
   /* Margin defaults - used as padding inside the resume container */
   --margin-top: 10mm;
   --margin-bottom: 10mm;
@@ -147,7 +149,7 @@
 
 /* Link pill - styled clickable link with icon support */
 .resume-link-pill {
-  font-family: var(--resume-font-mono);
+  font-family: var(--link-font);
   font-size: calc(var(--font-size-base) * 0.7);
   padding: 0.125rem 0.375rem;
   color: var(--resume-text-primary);
@@ -230,6 +232,7 @@
 }
 
 .resume-link {
+  font-family: var(--link-font);
   color: var(--resume-text-primary);
   text-decoration: none;
   overflow-wrap: anywhere;
@@ -256,6 +259,7 @@
 
 /* Inline links within content (from rich text editor) */
 .resume-body :global(a) {
+  font-family: var(--link-font);
   color: inherit;
   text-decoration: underline;
 }

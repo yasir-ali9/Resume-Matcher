@@ -10,6 +10,7 @@ import {
   type SpacingLevel,
   type HeaderFontFamily,
   type BodyFontFamily,
+  type LinkFontFamily,
   type AccentColor,
   DEFAULT_TEMPLATE_SETTINGS,
   applyTemplatePreset,
@@ -101,6 +102,13 @@ export const FormattingControls: React.FC<FormattingControlsProps> = ({ settings
     onChange({
       ...settings,
       fontSize: { ...settings.fontSize, bodyFont },
+    });
+  };
+
+  const handleLinkFontChange = (linkFont: LinkFontFamily) => {
+    onChange({
+      ...settings,
+      fontSize: { ...settings.fontSize, linkFont },
     });
   };
 
@@ -402,6 +410,41 @@ export const FormattingControls: React.FC<FormattingControlsProps> = ({ settings
                   ))}
                 </div>
               </div>
+              {/* Link Font Family */}
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs w-16 text-ink-soft">
+                  {t('builder.formatting.linkFontFamily')}:
+                </span>
+                <div
+                  className="flex gap-1"
+                  role="group"
+                  aria-label={t('builder.formatting.linkFontFamily')}
+                >
+                  {(['serif', 'sans-serif', 'mono'] as LinkFontFamily[]).map((font) => (
+                    <button
+                      key={font}
+                      type="button"
+                      aria-pressed={(settings.fontSize.linkFont ?? 'mono') === font}
+                      onClick={() => handleLinkFontChange(font)}
+                      className={`px-2 py-1 font-mono text-xs border transition-all ${
+                        (settings.fontSize.linkFont ?? 'mono') === font
+                          ? 'bg-blue-700 text-white border-blue-700 shadow-sw-xs'
+                          : 'bg-white text-ink-soft border-steel-grey hover:border-black'
+                      }`}
+                      style={{
+                        fontFamily:
+                          font === 'serif'
+                            ? 'Georgia, serif'
+                            : font === 'mono'
+                              ? 'monospace'
+                              : 'system-ui, sans-serif',
+                      }}
+                    >
+                      {getFontLabel(font)}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -496,6 +539,10 @@ export const FormattingControls: React.FC<FormattingControlsProps> = ({ settings
                 <div>
                   {t('builder.formatting.effectiveBodyFont')}:{' '}
                   {getFontLabel(settings.fontSize.bodyFont)}
+                </div>
+                <div>
+                  {t('builder.formatting.linkFontFamily')}:{' '}
+                  {getFontLabel(settings.fontSize.linkFont ?? 'mono')}
                 </div>
               </div>
               {settings.compactMode && (

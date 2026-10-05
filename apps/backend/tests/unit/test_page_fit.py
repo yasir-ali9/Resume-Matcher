@@ -26,10 +26,12 @@ def test_draft_store_round_trip_ttl_and_capacity() -> None:
 
 
 def test_page_fit_settings_query_matches_pdf_endpoint_params() -> None:
-    q = PageFitSettings(compactMode=True, lang="en").to_query()
+    q = PageFitSettings(compactMode=True, lang="en", linkFont="serif").to_query()
     assert q["template"] == "swiss-single" and q["pageSize"] == "A4"
     assert q["compactMode"] == "true" and q["showContactIcons"] == "false"
     assert q["marginTop"] == "10" and q["lang"] == "en"
+    assert q["linkFont"] == "serif"
+    assert PageFitSettings().to_query()["linkFont"] == "mono"
     assert "lang" not in PageFitSettings().to_query()
 
 

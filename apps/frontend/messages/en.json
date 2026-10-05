@@ -452,6 +452,7 @@
       "headerScale": "Headers",
       "headerFontFamily": "Headers",
       "bodyFontFamily": "Body",
+      "linkFontFamily": "Links",
       "fontNames": {
         "serif": "Serif",
         "sans": "Sans",

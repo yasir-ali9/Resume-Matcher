@@ -457,6 +457,7 @@
       "headerScale": "Cabeçalhos",
       "headerFontFamily": "Cabeçalhos",
       "bodyFontFamily": "Corpo",
+      "linkFontFamily": "Links",
       "options": "Opções",
       "compactMode": "Modo Compacto",
       "contactIcons": "Ícones de Contato",

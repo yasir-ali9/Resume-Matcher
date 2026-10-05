@@ -570,6 +570,7 @@ class PageFitSettings(BaseModel):
     headerScale: int = Field(3, ge=1, le=5)
     headerFont: Literal["serif", "sans-serif", "mono"] = "serif"
     bodyFont: Literal["serif", "sans-serif", "mono"] = "sans-serif"
+    linkFont: Literal["serif", "sans-serif", "mono"] = "mono"
     compactMode: bool = False
     showContactIcons: bool = False
     accentColor: Literal["blue", "green", "orange", "red"] = "blue"

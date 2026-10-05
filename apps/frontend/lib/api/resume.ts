@@ -81,6 +81,7 @@ export interface PageFitSettings {
   headerScale: number;
   headerFont: string;
   bodyFont: string;
+  linkFont: string;
   compactMode: boolean;
   showContactIcons: boolean;
   accentColor: string;
@@ -116,6 +117,7 @@ export function toPageFitSettings(settings: TemplateSettings, locale?: string): 
     headerScale: settings.fontSize.headerScale,
     headerFont: settings.fontSize.headerFont,
     bodyFont: settings.fontSize.bodyFont,
+    linkFont: settings.fontSize.linkFont ?? 'mono',
     compactMode: settings.compactMode,
     showContactIcons: settings.showContactIcons,
     accentColor: settings.accentColor,
@@ -324,6 +326,7 @@ export function getResumePdfUrl(
     params.set('headerScale', String(settings.fontSize.headerScale));
     params.set('headerFont', settings.fontSize.headerFont);
     params.set('bodyFont', settings.fontSize.bodyFont);
+    params.set('linkFont', settings.fontSize.linkFont ?? 'mono');
     params.set('compactMode', String(settings.compactMode));
     params.set('showContactIcons', String(settings.showContactIcons));
     params.set('accentColor', settings.accentColor);

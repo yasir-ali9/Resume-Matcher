@@ -430,6 +430,7 @@
       "headerScale": "제목",
       "headerFontFamily": "제목",
       "bodyFontFamily": "본문",
+      "linkFontFamily": "링크",
       "fontNames": {
         "serif": "세리프",
         "sans": "산세리프",

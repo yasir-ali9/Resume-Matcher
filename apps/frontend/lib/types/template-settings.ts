@@ -22,6 +22,7 @@ export type SpacingLevel = 1 | 2 | 3 | 4 | 5;
 
 export type HeaderFontFamily = 'serif' | 'sans-serif' | 'mono';
 export type BodyFontFamily = 'serif' | 'sans-serif' | 'mono';
+export type LinkFontFamily = 'serif' | 'sans-serif' | 'mono';
 
 export interface MarginSettings {
   top: number; // 5-25mm
@@ -41,6 +42,7 @@ export interface FontSizeSettings {
   headerScale: SpacingLevel; // Header size multiplier
   headerFont: HeaderFontFamily; // Header font family
   bodyFont: BodyFontFamily; // Body text font family
+  linkFont: LinkFontFamily; // Link text font family
 }
 
 export interface TemplateSettings {
@@ -62,7 +64,13 @@ export const DEFAULT_TEMPLATE_SETTINGS: TemplateSettings = {
   pageSize: 'A4',
   margins: { top: 10, bottom: 10, left: 10, right: 10 },
   spacing: { section: 3, item: 2, lineHeight: 3 },
-  fontSize: { base: 3, headerScale: 3, headerFont: 'serif', bodyFont: 'sans-serif' },
+  fontSize: {
+    base: 3,
+    headerScale: 3,
+    headerFont: 'serif',
+    bodyFont: 'sans-serif',
+    linkFont: 'mono',
+  },
   compactMode: false,
   showContactIcons: false,
   accentColor: 'blue',
@@ -223,6 +231,7 @@ export function settingsToCssVars(
     '--section-header-scale': SECTION_HEADER_SCALE_MAP[s.fontSize.headerScale],
     '--header-font': buildHeaderFontMap(locale)[s.fontSize.headerFont],
     '--body-font': buildBodyFontMap(locale)[s.fontSize.bodyFont],
+    '--link-font': buildBodyFontMap(locale)[s.fontSize.linkFont ?? 'mono'],
     '--margin-top': `${marginTop}mm`,
     '--margin-bottom': `${marginBottom}mm`,
     '--margin-left': `${marginLeft}mm`,

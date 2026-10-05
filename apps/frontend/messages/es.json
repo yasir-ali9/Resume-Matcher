@@ -452,6 +452,7 @@
       "headerScale": "Encabezados",
       "headerFontFamily": "Encabezados",
       "bodyFontFamily": "Cuerpo",
+      "linkFontFamily": "Enlaces",
       "fontNames": {
         "serif": "Serif",
         "sans": "Sans",
